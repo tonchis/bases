@@ -1,0 +1,84 @@
+Eleccion(idEleccion, fecha, idTipoEleccion, idTerritorio)
+  PK = CK = {idEleccion}
+  FK = {idTipoEleccion, idTerritorio}
+
+TipoEleccion(idTipoEleccion, nombre)
+  PK = CK = {idTipoEleccion}
+
+MesaElectoral(idMesaElectoral, numero, idPresidente, idVicePresidente, idTecnico, idCentroVotacion)
+  PK = CK = {idMesaElectoral}
+  FK = {idPresidente, idVicePresidente, idFiscal, idTecnico, idCentroVotacion}
+
+CentroVotacion(idCentroVotacion, direccion, idTerritorio, idCamioneta)
+  PK = CK = {idCentroVotacion}
+  FK = {idTerritorio, idCamioneta}
+
+Camioneta(idCamioneta, idPersona)
+  PK = CK = {idCamioneta}
+  FK = {idPersona}
+
+PartidoPolitico(idPartidoPolitico, nombre)
+  PK = CK = {idPartidoPolitico}
+
+Votos(idMesaElectoral, idPartidoPolitico, cantidad)
+  PK = CK = {(idMesaElectoral, idPartidoPolitico)}
+  FK = {idMesaElectoral, idPartidoPolitico}
+
+Persona(idPersona, nombre)
+  PK = CK = {idPersona}
+
+ViveEn(idPersona, idTerritorio, fechaDesde)
+  PK = CK = {(idPersona, idTerritorio, fechaDesde)}
+  FK = {idPersona, idTerritorio}
+
+Nacionalidad(idPersona, idTerritorio)
+  PK = CK = {(idPersona, idTerritorio)}
+  FK = {idPersona, idTerritorio}
+
+Tecnico(idPersona)
+  PK = CK = FK = {idPersona}
+
+Ciudadano(idPersona)
+  PK = CK = FK = {idPersona}
+
+Candidato(idPersona)
+  PK = CK = FK = {idPersona}
+
+AutoridadDeMesa(idPersona)
+  PK = CK = FK = {idPersona}
+
+Presidente(idPersona)
+  PK = CK = FK = {idPersona}
+
+VicePresidente(idPersona)
+  PK = CK = FK = {idPersona}
+
+Fiscal(idPersona)
+  PK = CK = FK = {idPersona}
+
+VotaEn(idCiudadano, idMesaElectoral, fecha, hora)
+  PK = CK = {(idCiudadano, idMesaElectoral)}
+  FK = {idCiudadano, idMesaElectoral}
+
+SePostula(idEleccion, idCandidato, idPartidoPolitico)
+  PK = {(idEleccion, idCandidato)}
+  CK = {(idEleccion, idCandidato), (idEleccion, idPartidoPolitico)}
+  FK = {idEleccion, idCandidato, idPartidoPolitico}
+
+  ¿Hace falta agregar restricción adicional para que no se repita PP o con CK (idEleccion, idPartidoPolitico) alcanza?
+
+Fizcaliza(idFiscal, idMesaElectoral, idPartidoPolitico)
+  PK = {(idMesaElectoral, idFiscal)}
+  CK = {(idMesaElectoral, idFiscal), (idMesaElectoral, idPartidoPolitico)}
+  FK = {idMesaElectoral, idFiscal, idPartidoPolitico}
+
+  ¿Hace falta agregar restricción adicional para que no se repita PP o con CK (idMesaElectoral, idPartidoPolitico) alcanza?
+
+Territorio(idTerritorio, nombre, idTipoTerritorio, idTerritorioPadre)
+  PK = CK = {idTerritorio}
+  FK = {idTipoTerritorio, idTerritorioPadre}
+
+  ¿Cómo se dice que idPadre es idTerritorio?
+
+TipoTerritorio(idTipoTerritorio, nombre)
+  PK = CK = {idTipoTerritorio}
