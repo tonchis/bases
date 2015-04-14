@@ -24,6 +24,10 @@ Votos(idMesaElectoral, idPartidoPolitico, cantidad)
   PK = CK = {(idMesaElectoral, idPartidoPolitico)}
   FK = {idMesaElectoral, idPartidoPolitico}
 
+DNI(tipo, numero, idPersona)
+  PK = CK = {(tipo, numero)}
+  FK = {idPersona}
+
 Persona(idPersona, nombre)
   PK = CK = {idPersona}
 
