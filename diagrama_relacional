@@ -10,17 +10,17 @@ MesaElectoral(idMesaElectoral, numero, idPresidente, idVicePresidente, idTecnico
   FK = {idPresidente, idVicePresidente, idFiscal, idTecnico, idCentroVotacion}
 
 MesaPlebiscito(idMesaElectoral)
-PK=CK=FK = {idMesaElectoral}
+  PK = CK = FK = {idMesaElectoral}
 
 MesaCandidato(idMesaElectoral)
-PK=CK=FK = {idMesaElectoral}
+  PK = CK = FK = {idMesaElectoral}
 
 Plebiscito(idPlebiscito, Consulta)
-PK=CK={idPlebiscito}
+  PK = CK = {idPlebiscito}
 
 VotosPlebiscito(idPlebiscito, idMesaElectoral, aFavor, enContra)
-PK = CK ={(idPlebiscito, idMesaElectoral)}
-FK = {idPlesbiscito, idMesaElectoral}
+  PK = CK = {(idPlebiscito, idMesaElectoral)}
+  FK = {idPlesbiscito, idMesaElectoral}
 
 CentroVotacion(idCentroVotacion, direccion, idTerritorio, idCamioneta)
   PK = CK = {idCentroVotacion}
@@ -41,14 +41,14 @@ Documento(tipo, numero, idPersona)
   PK = CK = {(tipo, numero)}
   FK = {idPersona}
 
-Persona(idPersona, nombre)
+Persona(idPersona, nombre, fechaNacimiento, fechaDefuncion)
   PK = CK = {idPersona}
 
 ViveEn(idPersona, idTerritorio, fechaDesde)
   PK = CK = {(idPersona, idTerritorio, fechaDesde)}
   FK = {idPersona, idTerritorio}
 
-Nacionalidad(idPersona, idTerritorio)
+OriundaDe(idPersona, idTerritorio)
   PK = CK = {(idPersona, idTerritorio)}
   FK = {idPersona, idTerritorio}
 
@@ -82,14 +82,10 @@ SePostula(idEleccion, idCandidato, idPartidoPolitico)
   CK = {(idEleccion, idCandidato), (idEleccion, idPartidoPolitico)}
   FK = {idEleccion, idCandidato, idPartidoPolitico}
 
-  ¿Hace falta agregar restricción adicional para que no se repita PP o con CK (idEleccion, idPartidoPolitico) alcanza?
-
 Fizcaliza(idFiscal, idMesaElectoral, idPartidoPolitico)
   PK = {(idMesaElectoral, idFiscal)}
   CK = {(idMesaElectoral, idFiscal), (idMesaElectoral, idPartidoPolitico)}
   FK = {idMesaElectoral, idFiscal, idPartidoPolitico}
-
-  ¿Hace falta agregar restricción adicional para que no se repita PP o con CK (idMesaElectoral, idPartidoPolitico) alcanza?
 
 Territorio(idTerritorio, nombre, idTipoTerritorio, idTerritorioPadre)
   PK = CK = {idTerritorio}
