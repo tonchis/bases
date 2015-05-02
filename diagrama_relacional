@@ -37,7 +37,7 @@ VotosCandidato(idMesaElectoral, idPersona, cantidad)
   PK = CK = {(idMesaElectoral, idPersona)}
   FK = {idMesaElectoral, idPersona}
 
-DNI(tipo, numero, idPersona)
+Documento(tipo, numero, idPersona)
   PK = CK = {(tipo, numero)}
   FK = {idPersona}
 
