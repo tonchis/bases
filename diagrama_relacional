@@ -41,7 +41,7 @@ Documento(tipo, numero, idPersona)
   PK = CK = {(tipo, numero)}
   FK = {idPersona}
 
-Persona(idPersona, nombre)
+Persona(idPersona, nombre, fechaNacimiento, fechaDefuncion)
   PK = CK = {idPersona}
 
 ViveEn(idPersona, idTerritorio, fechaDesde)
