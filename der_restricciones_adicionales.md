@@ -36,10 +36,12 @@ Para que un `Candidato` pueda participar de `SePostula` con un `PartidoPolítico
 el `Territorio` que esta última `abarca` debe ser igual o `contener` en algún nivel al `Territorio`
 en el cual el `Candidato` debe participar en `ViveEn`[2] con una `fechaDesde` mayor a los 5 años.
 
-
 [2] Idem [1].
 
 ### Solamente reciben votos los partidos que se presentan a la elección
 
 Para que `PartidoPolítico` puede participar de `votos` con `MesaElectoral`, debe participar en `SePostula` con la `Elección` a la cual la `MesaElectoral` `pertenece`.
 
+### Si el Partido Político tiene fiscales, tiene que postularse.
+
+Para que `PartidoPolítico` participe de `fiscaliza` con una `MesaElectoral`, debe participar en `sePostula` con una `Elección` que contenga esa `MesaElectoral`.
