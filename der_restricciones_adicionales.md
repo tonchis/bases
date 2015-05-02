@@ -24,13 +24,11 @@ Sólo los `Territorios` con `TipoTerritorio` de `nombre` "Ciudad" pueden partici
 
 ### Votar en las elecciones que corresponden según territorio.
 
-[ARREGLAR ACA]
-
 Para que un `Ciudadano` pueda participar en `Vota en` con `MesaElectoral`,
 ésta debe `pertenecer` a una `Eleccion` que `abarque` un `Territorio` el
-cual debe ser igual o `contiene` en algún nivel al `Territorio` del cual el `Ciudadano` es `OriundoDe`[1].
+cual debe ser igual o `contiene` en algún nivel al `Territorio` en el cual el `Ciudadano` `ViveEn` en el momento de la elección.[1].
 
-[1] quien participa de `OriundoDe` es `Persona`, no `Ciudadano`. Nos estamos refiriendo a la `Persona` correspondiente a dicho `Ciudadano`.
+[1] quien participa de `ViveEn` es `Persona`, no `Ciudadano`. Nos estamos refiriendo a la `Persona` correspondiente a dicho `Ciudadano`.
 
 ### Presentarse como candidato para la elección de algún cargo.
 
@@ -38,4 +36,10 @@ Para que un `Candidato` pueda participar de `SePostula` con un `PartidoPolítico
 el `Territorio` que esta última `abarca` debe ser igual o `contener` en algún nivel al `Territorio`
 en el cual el `Candidato` debe participar en `ViveEn`[2] con una `fechaDesde` mayor a los 5 años.
 
+
 [2] Idem [1].
+
+### Solamente reciben votos los partidos que se presentan a la elección
+
+Para que `PartidoPolítico` puede participar de `votos` con `MesaElectoral`, debe participar en `SePostula` con la `Elección` a la cual la `MesaElectoral` `pertenece`.
+
