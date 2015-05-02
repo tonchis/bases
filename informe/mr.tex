@@ -1,1 +1,97 @@
 \section{Modelo Relacional}
+
+\textbf{Eleccion}(idEleccion, fecha, idTipoEleccion, idTerritorio)\\
+  PK = CK = \{idEleccion\}\\
+  FK = \{idTipoEleccion, idTerritorio\}\\
+\\
+\textbf{TipoEleccion}(idTipoEleccion, nombre)\\
+  PK = CK = \{idTipoEleccion\}\\
+\\
+\textbf{MesaElectoral}(idMesaElectoral, numero, idPresidente, idVicePresidente, idTecnico, idCentroVotacion)\\
+  PK = CK = \{idMesaElectoral\}\\
+  FK = \{idPresidente, idVicePresidente, idFiscal, idTecnico, idCentroVotacion\}\\
+\\
+\textbf{MesaPlebiscito}(idMesaElectoral)\\
+  PK = CK = FK = \{idMesaElectoral\}\\
+\\
+\textbf{MesaCandidato}(idMesaElectoral)\\
+  PK = CK = FK = \{idMesaElectoral\}\\
+\\
+\textbf{Plebiscito}(idPlebiscito, Consulta)\\
+  PK = CK = \{idPlebiscito\}\\
+\\
+\textbf{VotosPlebiscito}(idPlebiscito, idMesaElectoral, aFavor, enContra)\\
+  PK = CK = \{(idPlebiscito, idMesaElectoral)\}\\
+  FK = \{idPlesbiscito, idMesaElectoral\}\\
+\\
+\textbf{CentroVotacion}(idCentroVotacion, direccion, idTerritorio, idCamioneta)\\
+  PK = CK = \{idCentroVotacion\}\\
+  FK = \{idTerritorio, idCamioneta\}\\
+\\
+\textbf{Camioneta}(idCamioneta, idPersona)\\
+  PK = CK = \{idCamioneta\}\\
+  FK = \{idPersona\}\\
+\\
+\textbf{PartidoPolitico}(idPartidoPolitico, nombre)\\
+  PK = CK = \{idPartidoPolitico\}\\
+\\
+\textbf{VotosCandidato}(idMesaElectoral, idPersona, cantidad)\\
+  PK = CK = \{(idMesaElectoral, idPersona)\}\\
+  FK = \{idMesaElectoral, idPersona\}\\
+\\
+\textbf{Documento}(tipo, numero, idPersona)\\
+  PK = CK = \{(tipo, numero)\}\\
+  FK = \{idPersona\}\\
+\\
+\textbf{Persona}(idPersona, nombre, fechaNacimiento, fechaDefuncion)\\
+  PK = CK = \{idPersona\}\\
+\\
+\textbf{ViveEn}(idPersona, idTerritorio, fechaDesde)\\
+  PK = CK = \{(idPersona, idTerritorio, fechaDesde)\}\\
+  FK = \{idPersona, idTerritorio\}\\
+\\
+\textbf{OriundaDe}(idPersona, idTerritorio)\\
+  PK = CK = \{(idPersona, idTerritorio)\}\\
+  FK = \{idPersona, idTerritorio\}\\
+\\
+\textbf{Tecnico}(idPersona)\\
+  PK = CK = FK = \{idPersona\}\\
+\\
+\textbf{Ciudadano}(idPersona)\\
+  PK = CK = FK = \{idPersona\}\\
+\\
+\textbf{Candidato}(idPersona)\\
+  PK = CK = FK = \{idPersona\}\\
+\\
+\textbf{AutoridadDeMesa}(idPersona)\\
+  PK = CK = FK = \{idPersona\}\\
+\\
+\textbf{Presidente}(idPersona)\\
+  PK = CK = FK = \{idPersona\}\\
+\\
+\textbf{VicePresidente}(idPersona)\\
+  PK = CK = FK = \{idPersona\}\\
+\\
+\textbf{Fiscal}(idPersona)\\
+  PK = CK = FK = \{idPersona\}\\
+\\
+\textbf{VotaEn}(idCiudadano, idMesaElectoral, fecha, hora)\\
+  PK = CK = \{(idCiudadano, idMesaElectoral)\}\\
+  FK = \{idCiudadano, idMesaElectoral\}\\
+\\
+\textbf{SePostula}(idEleccion, idCandidato, idPartidoPolitico)\\
+  PK = \{(idEleccion, idCandidato)\}\\
+  CK = \{(idEleccion, idCandidato), (idEleccion, idPartidoPolitico)\}\\
+  FK = \{idEleccion, idCandidato, idPartidoPolitico\}\\
+\\
+\textbf{Fizcaliza}(idFiscal, idMesaElectoral, idPartidoPolitico)\\
+  PK = \{(idMesaElectoral, idFiscal)\}\\
+  CK = \{(idMesaElectoral, idFiscal), (idMesaElectoral, idPartidoPolitico)\}\\
+  FK = \{idMesaElectoral, idFiscal, idPartidoPolitico\}\\
+\\
+\textbf{Territorio}(idTerritorio, nombre, idTipoTerritorio, idTerritorioPadre)\\
+  PK = CK = \{idTerritorio\}
+  FK = \{idTipoTerritorio, idTerritorioPadre\}\\
+\\
+\textbf{TipoTerritorio}(idTipoTerritorio, nombre)\\
+  PK = CK = \{idTipoTerritorio\}\\	
