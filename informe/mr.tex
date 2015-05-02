@@ -7,9 +7,9 @@
 \textbf{TipoEleccion}(idTipoEleccion, nombre)\\
   PK = CK = \{idTipoEleccion\}\\
 \\
-\textbf{MesaElectoral}(idMesaElectoral, numero, idPresidente, idVicePresidente, idTecnico, idCentroVotacion)\\
+\textbf{MesaElectoral}(idMesaElectoral, numero, idPresidente, idVicePresidente, idTecnico, idCentroVotacion, idEleccion)\\
   PK = CK = \{idMesaElectoral\}\\
-  FK = \{idPresidente, idVicePresidente, idFiscal, idTecnico, idCentroVotacion\}\\
+  FK = \{idPresidente, idVicePresidente, idFiscal, idTecnico, idCentroVotacion, idEleccion\}\\
 \\
 \textbf{MesaPlebiscito}(idMesaElectoral)\\
   PK = CK = FK = \{idMesaElectoral\}\\
