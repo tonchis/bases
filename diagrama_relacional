@@ -9,6 +9,19 @@ MesaElectoral(idMesaElectoral, numero, idPresidente, idVicePresidente, idTecnico
   PK = CK = {idMesaElectoral}
   FK = {idPresidente, idVicePresidente, idFiscal, idTecnico, idCentroVotacion}
 
+MesaPlebiscito(idMesaElectoral)
+PK=CK=FK = {idMesaElectoral}
+
+MesaCandidato(idMesaElectoral)
+PK=CK=FK = {idMesaElectoral}
+
+Plebiscito(idPlebiscito, Consulta)
+PK=CK={idPlebiscito}
+
+VotosPlebiscito(idPlebiscito, idMesaElectoral, aFavor, enContra)
+PK = CK ={(idPlebiscito, idMesaElectoral)}
+FK = {idPlesbiscito, idMesaElectoral}
+
 CentroVotacion(idCentroVotacion, direccion, idTerritorio, idCamioneta)
   PK = CK = {idCentroVotacion}
   FK = {idTerritorio, idCamioneta}
@@ -20,9 +33,9 @@ Camioneta(idCamioneta, idPersona)
 PartidoPolitico(idPartidoPolitico, nombre)
   PK = CK = {idPartidoPolitico}
 
-Votos(idMesaElectoral, idPartidoPolitico, cantidad)
-  PK = CK = {(idMesaElectoral, idPartidoPolitico)}
-  FK = {idMesaElectoral, idPartidoPolitico}
+VotosCandidato(idMesaElectoral, idPersona, cantidad)
+  PK = CK = {(idMesaElectoral, idPersona)}
+  FK = {idMesaElectoral, idPersona}
 
 DNI(tipo, numero, idPersona)
   PK = CK = {(tipo, numero)}
