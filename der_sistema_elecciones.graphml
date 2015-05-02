@@ -1045,7 +1045,7 @@
           <y:Geometry height="40.0" width="80.0" x="966.0121558896358" y="267.31972183527796"/>
           <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" modelName="custom" textColor="#000000" visible="true" width="25.310546875" x="27.3447265625" y="10.93359375">DNI<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" modelName="custom" textColor="#000000" visible="true" width="71.1484375" x="4.42578125" y="10.93359375">Documento<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -1323,7 +1323,6 @@
       </data>
     </node>
     <node id="n69">
-      <data key="d6"/>
       <data key="d7">
         <y:GenericNode configuration="com.yworks.entityRelationship.attribute">
           <y:Geometry height="40.0" width="113.93123453237422" x="1335.865084788402" y="199.34799502157819"/>
@@ -1343,7 +1342,6 @@
       </data>
     </node>
     <node id="n70">
-      <data key="d6"/>
       <data key="d7">
         <y:GenericNode configuration="com.yworks.entityRelationship.attribute">
           <y:Geometry height="40.0" width="126.32969696969712" x="1470.1560315509926" y="199.34799502157819"/>
@@ -2603,7 +2601,6 @@
       </data>
     </edge>
     <edge id="e80" source="n0" target="n69">
-      <data key="d10"/>
       <data key="d11">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2614,7 +2611,6 @@
       </data>
     </edge>
     <edge id="e81" source="n0" target="n70">
-      <data key="d10"/>
       <data key="d11">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
