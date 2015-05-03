@@ -1,159 +1,218 @@
-﻿create table TipoTerritorio(
-			idTipoTerritorio serial primary key,
-			nombre varchar(255)
-			);
+DROP TABLE IF EXISTS  VotaEn;
+DROP TABLE IF EXISTS  Fiscaliza;
+DROP TABLE IF EXISTS  SePostula;
+DROP TABLE IF EXISTS  VotosCandidato;
+DROP TABLE IF EXISTS  PartidoPolitico;
+DROP TABLE IF EXISTS  VotosPlebiscito;
+DROP TABLE IF EXISTS  Plebiscito;
+DROP TABLE IF EXISTS  MesaCandidato;
+DROP TABLE IF EXISTS  MesaPlebiscito;
+DROP TABLE IF EXISTS  MesaElectoral;
+DROP TABLE IF EXISTS  CentroVotacion;
+DROP TABLE IF EXISTS  Camioneta;
+DROP TABLE IF EXISTS  Eleccion;
+DROP TABLE IF EXISTS  TipoEleccion;
+DROP TABLE IF EXISTS  Fiscal;
+DROP TABLE IF EXISTS  VicePresidente;
+DROP TABLE IF EXISTS  Presidente;
+DROP TABLE IF EXISTS  AutoridadDeMesa;
+DROP TABLE IF EXISTS  Candidato;
+DROP TABLE IF EXISTS  Ciudadano;
+DROP TABLE IF EXISTS  Tecnico;
+DROP TABLE IF EXISTS  OriundaDe;
+DROP TABLE IF EXISTS  ViveEn;
+DROP TABLE IF EXISTS  Documento;
+DROP TABLE IF EXISTS  Persona;
+DROP TABLE IF EXISTS  Territorio;
+DROP TABLE IF EXISTS  TipoTerritorio;
 
-create table Territorio(
-			idTerritorio serial primary key,
-			nombre varchar(255),
-			idTipoTerritorio int not null references TipoTerritorio
-			);
-create table Persona(
-			idPersonal serial primary key,
-			nombre varchar(255) not null,
-			apellido varchar(255) not null,
-			fechaNacimiento	date not null,
-			fechaDefuncion date
-			);
-
-
-
-create table Documento(
-			tipo varchar(255) not null,
-			numero int not null CHECK(numero > 0),
-			idPersona int  not null references Persona,
-			PRIMARY KEY (tipo,numero)
-			);
-
-
-
-create table ViveEn(
-		idPersona int not null references Persona,
-		idTerritorio int not null references Territorio,
-		fechaDesde date not null,
-		PRIMARY KEY(idPersona,idTerritorio,fechaDesde)
-		);
-
-create table OriundaDe(
-		idPersona int not null references Persona,
-		idTerritorio int not null references Territorio,
-		PRIMARY KEY(idPersona,idTerritorio)
-		);
-
-create table Tecnico(
-			idPersona int not null references Persona,
-			PRIMARY KEY(idPersona)
-			);
-create table Ciudadano(
-			idPersona int not null references Persona,
-			PRIMARY KEY(idPersona)
-			);
-create table Candidato(
-			idPersona int not null references Persona,
-			PRIMARY KEY(idPersona)
-			);
-create table AutoridadDeMesa(
-			idPersona int not null references Persona,
-			PRIMARY KEY(idPersona)
-			);
-create table Presidente(
-			idPersona int not null references Persona,
-			PRIMARY KEY(idPersona)
-			);
-create table VicePresidente(
-			idPersona int not null references Persona,
-			PRIMARY KEY(idPersona)
-			);
-create table Fiscal(
-			idPersona int not null references Persona,
-			PRIMARY KEY(idPersona)
-			);
-
-create table TipoEleccion(
-			idTipoEleccion serial primary key,
-			nombre varchar(255) not null
-			);
-create table Eleccion(			
-			idEleccion serial primary key,
-			fecha date not null,
-			idTipoEleccion int not null references TipoEleccion,
-			idTerritorio int not null references Territorio
-			);
-
-----------------
-create table Camioneta(
-			idCamioneta serial primary key,
-			idPersona int not null references Persona
-			);
-
-create table CentroVotacion(
-			idCentroVotacion serial primary key,
-			direccion varchar(255) not null,
-			idTerritorio int not null references Territorio,
-			idCamioneta int not null references Camioneta
-			);
-
-			
-create table MesaElectoral(
-			idMesaElectoral serial primary key,
-			numero int not null check( numero > 0),
-			idPresidente int not  null references Presidente,
-			idVicePresidente int not null references VicePresidente,
-			idTecnico int not null references Tecnico,
-			idCentroVotacion int not null references CentroVotacion,
-			idEleccion int not null references Eleccion,
-			UNIQUE(numero,idEleccion)
-			);
-
-create table MesaPlebiscito(
-			idMesaElectoral int not null references MesaElectoral primary key
-			);
-create table MesaCandidato(
-			idMesaElectoral int not null references MesaElectoral primary key
-			);
-
-create table Plebiscito(
-			idPlebiscito serial primary key,
-			consulta varchar(255)
-			);
-create table VotosPlebiscito(
-			idPlebiscito int not null references Plebiscito,
-			idMesaElectoral int not null references MesaPlebiscito,
-			aFavor int not null DEFAULT 0 check(aFavor >= 0 ),
-			enContra int not null DEFAULT 0 check(enContra >= 0 ),
-			PRIMARY KEY(idPlebiscito,idMesaElectoral)
-			);
-
-create table PartidoPolitico(
-			idPartidoPolitico serial primary key,
-			nombre varchar(255)
-			);
-			
-create table VotosCandidato(
-			idMesaElectoral int not null references MesaCandidato,
-			idCandidato int not null references Candidato,
-			cantidad int not null DEFAULT 0 CHECK( cantidad >= 0 ),
-			PRIMARY KEY(idMesaElectoral,idCandidato)
-			);
-create table SePostula(
-		idEleccion int not null references Eleccion,
-		idCandidato int not null references Candidato,
-		idPartidoPolitico int not null references PartidoPolitico,
-		primary key(idEleccion,idCandidato)
-		);
-
-create table Fiscaliza(
-		idMesaElectoral int not null references MesaElectoral,
-		idFiscal int not null references Fiscal,
-		idPartidoPolitico int not null references PartidoPolitico,
-		primary key(idMesaElectoral,idFiscal)
-		);
+CREATE TABLE TipoTerritorio(
+	idTipoTerritorio SERIAL PRIMARY KEY,
+	nombre VARCHAR(255)
+);
 
 
-create table VotaEn(
-		idCiudadano int not null references Ciudadano,
-		idMesaElectoral int not null references MesaElectoral,
-		fecha date,
-		hora time,
-		PRIMARY KEY(idCiudadano,idMesaElectoral)
-		);
+CREATE TABLE Territorio(
+	idTerritorio SERIAL PRIMARY KEY,
+	nombre VARCHAR(255),
+	idTipoTerritorio INT NOT NULL REFERENCES TipoTerritorio
+	);
+
+
+CREATE TABLE Persona(
+	idPersonal SERIAL PRIMARY KEY,
+	nombre VARCHAR(255) NOT NULL,
+	apellido VARCHAR(255) NOT NULL,
+	fechaNacimiento	DATE NOT NULL,
+	fechaDefuncion DATE
+	);
+
+
+CREATE TABLE Documento(
+	tipo VARCHAR(255) NOT NULL,
+	numero INT NOT NULL CHECK(numero > 0),
+	idPersona INT  NOT NULL REFERENCES Persona,
+	PRIMARY KEY (tipo,numero)
+	);
+
+
+CREATE TABLE ViveEn(
+	idPersona INT NOT NULL REFERENCES Persona,
+	idTerritorio INT NOT NULL REFERENCES Territorio,
+	fechaDesde DATE NOT NULL,
+	PRIMARY KEY(idPersona,idTerritorio,fechaDesde)
+	);
+
+
+CREATE TABLE OriundaDe(
+	idPersona INT NOT NULL REFERENCES Persona,
+	idTerritorio INT NOT NULL REFERENCES Territorio,
+	PRIMARY KEY(idPersona,idTerritorio)
+	);
+
+
+CREATE TABLE Tecnico(
+	idPersona INT NOT NULL REFERENCES Persona,
+	PRIMARY KEY(idPersona)
+	);
+
+
+CREATE TABLE Ciudadano(
+	idPersona INT NOT NULL REFERENCES Persona,
+	PRIMARY KEY(idPersona)
+	);
+
+
+CREATE TABLE Candidato(
+	idPersona INT NOT NULL REFERENCES Persona,
+	PRIMARY KEY(idPersona)
+	);
+
+
+CREATE TABLE AutoridadDeMesa(
+	idPersona INT NOT NULL REFERENCES Persona,
+	PRIMARY KEY(idPersona)
+	);
+
+
+CREATE TABLE Presidente(
+	idPersona INT NOT NULL REFERENCES Persona,
+	PRIMARY KEY(idPersona)
+	);
+
+
+CREATE TABLE VicePresidente(
+	idPersona INT NOT NULL REFERENCES Persona,
+	PRIMARY KEY(idPersona)
+	);
+
+
+CREATE TABLE Fiscal(
+	idPersona INT NOT NULL REFERENCES Persona,
+	PRIMARY KEY(idPersona)
+	);
+
+
+CREATE TABLE TipoEleccion(
+	idTipoEleccion SERIAL PRIMARY KEY,
+	nombre VARCHAR(255) NOT NULL
+	);
+
+
+CREATE TABLE Eleccion(
+	idEleccion SERIAL PRIMARY KEY,
+	fecha DATE NOT NULL,
+	idTipoEleccion INT NOT NULL REFERENCES TipoEleccion,
+	idTerritorio INT NOT NULL REFERENCES Territorio
+	);
+
+
+CREATE TABLE Camioneta(
+	idCamioneta SERIAL PRIMARY KEY,
+	idPersona INT NOT NULL REFERENCES Persona
+	);
+
+
+CREATE TABLE CentroVotacion(
+	idCentroVotacion SERIAL PRIMARY KEY,
+	direccion VARCHAR(255) NOT NULL,
+	idTerritorio INT NOT NULL REFERENCES Territorio,
+	idCamioneta INT NOT NULL REFERENCES Camioneta
+	);
+
+
+CREATE TABLE MesaElectoral(
+	idMesaElectoral SERIAL PRIMARY KEY,
+	numero INT NOT NULL check( numero > 0),
+	idPresidente INT not  null REFERENCES Presidente,
+	idVicePresidente INT NOT NULL REFERENCES VicePresidente,
+	idTecnico INT NOT NULL REFERENCES Tecnico,
+	idCentroVotacion INT NOT NULL REFERENCES CentroVotacion,
+	idEleccion INT NOT NULL REFERENCES Eleccion,
+	UNIQUE(numero,idEleccion)
+	);
+
+
+CREATE TABLE MesaPlebiscito(
+	idMesaElectoral INT NOT NULL REFERENCES MesaElectoral PRIMARY KEY
+	);
+
+
+CREATE TABLE MesaCandidato(
+	idMesaElectoral INT NOT NULL REFERENCES MesaElectoral PRIMARY KEY
+	);
+
+
+CREATE TABLE Plebiscito(
+	idPlebiscito SERIAL PRIMARY KEY,
+	consulta VARCHAR(255)
+	);
+
+
+CREATE TABLE VotosPlebiscito(
+	idPlebiscito INT NOT NULL REFERENCES Plebiscito,
+	idMesaElectoral INT NOT NULL REFERENCES MesaPlebiscito,
+	aFavor INT NOT NULL DEFAULT 0 check(aFavor >= 0 ),
+	enContra INT NOT NULL DEFAULT 0 check(enContra >= 0 ),
+	PRIMARY KEY(idPlebiscito,idMesaElectoral)
+	);
+
+
+CREATE TABLE PartidoPolitico(
+	idPartidoPolitico SERIAL PRIMARY KEY,
+	nombre VARCHAR(255)
+	);
+
+
+CREATE TABLE VotosCandidato(
+	idMesaElectoral INT NOT NULL REFERENCES MesaCandidato,
+	idCandidato INT NOT NULL REFERENCES Candidato,
+	cantidad INT NOT NULL DEFAULT 0 CHECK( cantidad >= 0 ),
+	PRIMARY KEY(idMesaElectoral,idCandidato)
+	);
+
+
+CREATE TABLE SePostula(
+	idEleccion INT NOT NULL REFERENCES Eleccion,
+	idCandidato INT NOT NULL REFERENCES Candidato,
+	idPartidoPolitico INT NOT NULL REFERENCES PartidoPolitico,
+	PRIMARY KEY(idEleccion,idCandidato)
+	);
+
+
+CREATE TABLE Fiscaliza(
+	idMesaElectoral INT NOT NULL REFERENCES MesaElectoral,
+	idFiscal INT NOT NULL REFERENCES Fiscal,
+	idPartidoPolitico INT NOT NULL REFERENCES PartidoPolitico,
+	PRIMARY KEY(idMesaElectoral,idFiscal)
+	);
+
+
+
+CREATE TABLE VotaEn(
+	idCiudadano INT NOT NULL REFERENCES Ciudadano,
+	idMesaElectoral INT NOT NULL REFERENCES MesaElectoral,
+	fecha DATE,
+	hora TIME,
+	PRIMARY KEY(idCiudadano,idMesaElectoral)
+	);
