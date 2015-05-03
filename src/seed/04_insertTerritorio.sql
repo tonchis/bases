@@ -7,12 +7,9 @@ INSERT INTO Territorio (nombre, idTipoTerritorio, idTerritorioPadre) VALUES ('Sa
 INSERT INTO Territorio (nombre, idTipoTerritorio, idTerritorioPadre) VALUES ('Cordoba', 2, 1);
 INSERT INTO Territorio (nombre, idTipoTerritorio, idTerritorioPadre) VALUES ('Tierra del Fuego', 2, 1);
 
--- Localidades
--- ...
-
 -- Ciudades
-INSERT INTO Territorio (nombre, idTipoTerritorio, idTerritorioPadre) VALUES ('CABA', 4, 1);
-INSERT INTO Territorio (nombre, idTipoTerritorio, idTerritorioPadre) VALUES ('La Plata', 4, 4);
-INSERT INTO Territorio (nombre, idTipoTerritorio, idTerritorioPadre) VALUES ('Mar del Plata', 4, 4);
-INSERT INTO Territorio (nombre, idTipoTerritorio, idTerritorioPadre) VALUES ('Villa Gessell', 4, 4);
-INSERT INTO Territorio (nombre, idTipoTerritorio, idTerritorioPadre) VALUES ('Rosario', 4, 5);
+INSERT INTO Territorio (nombre, idTipoTerritorio, idTerritorioPadre) VALUES ('CABA', 3, 4);
+INSERT INTO Territorio (nombre, idTipoTerritorio, idTerritorioPadre) VALUES ('La Plata', 3, 4);
+INSERT INTO Territorio (nombre, idTipoTerritorio, idTerritorioPadre) VALUES ('Mar del Plata', 3, 4);
+INSERT INTO Territorio (nombre, idTipoTerritorio, idTerritorioPadre) VALUES ('Villa Gessell', 3, 4);
+INSERT INTO Territorio (nombre, idTipoTerritorio, idTerritorioPadre) VALUES ('Rosario', 3, 5);
