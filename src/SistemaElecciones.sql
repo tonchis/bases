@@ -40,7 +40,7 @@ CREATE TABLE Territorio(
 
 
 CREATE TABLE Persona(
-	idPersonal SERIAL PRIMARY KEY,
+	idPersona SERIAL PRIMARY KEY,
 	nombre VARCHAR(255) NOT NULL,
 	apellido VARCHAR(255) NOT NULL,
 	fechaNacimiento	DATE NOT NULL,
