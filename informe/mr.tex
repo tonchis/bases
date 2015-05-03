@@ -43,15 +43,12 @@
   PK = CK = \{(tipo, numero)\}\\
   FK = \{idPersona\}\\
 \\
-\textbf{Persona}(idPersona, nombre, fechaNacimiento, fechaDefuncion)\\
+\textbf{Persona}(idPersona, nombre, fechaNacimiento, fechaDefuncion, idTerritorio)\\
   PK = CK = \{idPersona\}\\
+  FK = \{idTerritorio\}\\
 \\
 \textbf{ViveEn}(idPersona, idTerritorio, fechaDesde)\\
   PK = CK = \{(idPersona, idTerritorio, fechaDesde)\}\\
-  FK = \{idPersona, idTerritorio\}\\
-\\
-\textbf{OriundaDe}(idPersona, idTerritorio)\\
-  PK = CK = \{(idPersona, idTerritorio)\}\\
   FK = \{idPersona, idTerritorio\}\\
 \\
 \textbf{Tecnico}(idPersona)\\
