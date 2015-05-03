@@ -35,7 +35,8 @@ CREATE TABLE TipoTerritorio(
 CREATE TABLE Territorio(
 	idTerritorio SERIAL PRIMARY KEY,
 	nombre VARCHAR(255),
-	idTipoTerritorio INT NOT NULL REFERENCES TipoTerritorio
+	idTipoTerritorio INT NOT NULL REFERENCES TipoTerritorio,
+	idTerritorioPadre INT REFERENCES Territorio
 	);
 
 
