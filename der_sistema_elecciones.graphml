@@ -1266,7 +1266,6 @@
       </data>
     </node>
     <node id="n66">
-      <data key="d6"/>
       <data key="d7">
         <y:GenericNode configuration="com.yworks.entityRelationship.attribute">
           <y:Geometry height="48.91502418228947" width="90.0" x="652.5865724125968" y="1096.7045703901038"/>
@@ -1324,7 +1323,6 @@
       </data>
     </node>
     <node id="n69">
-      <data key="d6"/>
       <data key="d7">
         <y:GenericNode configuration="com.yworks.entityRelationship.attribute">
           <y:Geometry height="48.0" width="126.32969696969712" x="1457.2224198504991" y="203.0697218352779"/>
@@ -1344,7 +1342,6 @@
       </data>
     </node>
     <node id="n70">
-      <data key="d6"/>
       <data key="d7">
         <y:GenericNode configuration="com.yworks.entityRelationship.attribute">
           <y:Geometry height="48.0" width="126.32969696969712" x="1556.4821845282843" y="244.69591715195037"/>
@@ -1601,7 +1598,7 @@
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="none"/>
-          <y:EdgeLabel alignment="center" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="custom" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" visible="true" width="14.353515625" x="126.05336753325855" y="106.47452425233064">M<y:LabelModel>
+          <y:EdgeLabel alignment="center" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="custom" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" visible="true" width="11.634765625" x="127.41274253325855" y="106.47452425233064">1<y:LabelModel>
               <y:SmartEdgeLabelModel autoRotationEnabled="false" defaultAngle="0.0" defaultDistance="10.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -2574,7 +2571,6 @@
       </data>
     </edge>
     <edge id="e77" source="n66" target="n60">
-      <data key="d10"/>
       <data key="d11">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2585,7 +2581,6 @@
       </data>
     </edge>
     <edge id="e78" source="n67" target="n60">
-      <data key="d10"/>
       <data key="d11">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2596,7 +2591,6 @@
       </data>
     </edge>
     <edge id="e79" source="n61" target="n68">
-      <data key="d10"/>
       <data key="d11">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2607,7 +2601,6 @@
       </data>
     </edge>
     <edge id="e80" source="n0" target="n69">
-      <data key="d10"/>
       <data key="d11">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2618,7 +2611,6 @@
       </data>
     </edge>
     <edge id="e81" source="n0" target="n70">
-      <data key="d10"/>
       <data key="d11">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
