@@ -19,7 +19,6 @@ DROP TABLE IF EXISTS  AutoridadDeMesa;
 DROP TABLE IF EXISTS  Candidato;
 DROP TABLE IF EXISTS  Ciudadano;
 DROP TABLE IF EXISTS  Tecnico;
-DROP TABLE IF EXISTS  OriundaDe;
 DROP TABLE IF EXISTS  ViveEn;
 DROP TABLE IF EXISTS  Documento;
 DROP TABLE IF EXISTS  Persona;
@@ -45,7 +44,8 @@ CREATE TABLE Persona(
 	nombre VARCHAR(255) NOT NULL,
 	apellido VARCHAR(255) NOT NULL,
 	fechaNacimiento	DATE NOT NULL,
-	fechaDefuncion DATE
+	fechaDefuncion DATE,
+  idTerritorio INT NOT NULL REFERENCES Territorio
 	);
 
 
@@ -62,13 +62,6 @@ CREATE TABLE ViveEn(
 	idTerritorio INT NOT NULL REFERENCES Territorio,
 	fechaDesde DATE NOT NULL,
 	PRIMARY KEY(idPersona,idTerritorio,fechaDesde)
-	);
-
-
-CREATE TABLE OriundaDe(
-	idPersona INT NOT NULL REFERENCES Persona,
-	idTerritorio INT NOT NULL REFERENCES Territorio,
-	PRIMARY KEY(idPersona,idTerritorio)
 	);
 
 
