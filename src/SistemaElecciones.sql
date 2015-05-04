@@ -210,3 +210,21 @@ CREATE TABLE VotaEn(
 	hora TIME,
 	PRIMARY KEY(idCiudadano,idMesaElectoral)
 	);
+
+
+CREATE OR REPLACE FUNCTION OriundaDeCiudad() RETURNS TRIGGER AS $$
+	BEGIN
+	IF (SELECT count(*) FROM Territorio WHERE idTerritorio=NEW.idTerritorio AND idTipoTerritorio=3) = 0 THEN
+		RAISE EXCEPTION 'Solo puede ser oriundo de una ciudad';              
+	ELSE
+		RETURN NEW;
+	END IF;
+	RETURN NULL;
+	END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER CheckInsertPersona
+	BEFORE INSERT ON Persona
+	FOR EACH ROW EXECUTE PROCEDURE OriundaDeCiudad();
+
