@@ -24,7 +24,6 @@ DROP TABLE IF EXISTS  Documento CASCADE;
 DROP TABLE IF EXISTS  Persona CASCADE;
 DROP TABLE IF EXISTS  Territorio CASCADE;
 DROP TABLE IF EXISTS  TipoTerritorio CASCADE;
-DROP TABLE IF EXISTS  OriundaDe CASCADE;
 
 CREATE TABLE TipoTerritorio(
 	idTipoTerritorio SERIAL PRIMARY KEY,
@@ -45,7 +44,7 @@ CREATE TABLE Persona(
 	nombre VARCHAR(255) NOT NULL,
 	apellido VARCHAR(255) NOT NULL,
 	fechaNacimiento	DATE NOT NULL,
-	fechaDefuncion DATE,
+	fechaDefuncion DATE CHECK( fechaDefuncion >= fechaNacimiento ),
 	idTerritorio INT NOT NULL REFERENCES Territorio
 	);
 
