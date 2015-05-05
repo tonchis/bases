@@ -228,3 +228,27 @@ CREATE TRIGGER CheckInsertPersona
 	BEFORE INSERT ON Persona
 	FOR EACH ROW EXECUTE PROCEDURE OriundaDeCiudad();
 
+
+CREATE OR REPLACE FUNCTION checkVotosCandidato() RETURNS TRIGGER AS $$
+	BEGIN
+	IF (SELECT count(*) FROM MesaElectoral M INNER JOIN Eleccion E ON M.idEleccion = E.idEleccion
+		INNER JOIN SePostula S on E.idEleccion =  S.idEleccion
+		WHERE S.idCandidato = NEW.idCandidato AND M.idMesaElectoral = NEW.idMesaElectoral ) = 0 THEN
+		RAISE EXCEPTION 'El candidato se ha postulado para la eleccion de la Mesa';              
+	ELSE
+		RETURN NEW;
+	END IF;
+	RETURN NULL;
+	END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER CheckInsertVotosCandidato
+	BEFORE INSERT ON VotosCandidato
+	FOR EACH ROW EXECUTE PROCEDURE checkVotosCandidato();
+
+
+CREATE TRIGGER CheckUpdateVotosCandidato
+	BEFORE UPDATE ON VotosCandidato
+	FOR EACH ROW EXECUTE PROCEDURE checkVotosCandidato();
+
