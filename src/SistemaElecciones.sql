@@ -317,12 +317,21 @@ CREATE TRIGGER CheckUpdateFiscaliza
 
 
 CREATE OR REPLACE FUNCTION checkVotaEn() RETURNS TRIGGER AS $$
+	DECLARE
+	fechaDF date;
+	fechaE date;
 	BEGIN
-	IF (SELECT count(*) FROM VotaEn V INNER JOIN MesaElectoral M ON V.idMesaElectoral = M.idMesaElectoral INNER JOIN Eleccion E ON M.idEleccion = E.idEleccion
-		WHERE M.idEleccion = (SELECT idEleccion from MesaElectoral WHERE idMesaElectoral = NEW.idMesaElectoral) AND V.idCiudadano = New.idCiudadano ) >  0 THEN
-		RAISE EXCEPTION 'El ciudadano ya fue asignado a una Mesa para esta eleccion';              
+	SELECT fechaDefuncion INTO fechaDF FROM Persona WHERE idPersona = NEW.idCiudadano and fechaDefuncion IS NOT NULL;  
+	SELECT fecha INTO fechaE FROM MesaElectoral M INNER JOIN Eleccion E ON M.idEleccion = E.idEleccion WHERE M.idMesaElectoral = NEW.idMesaElectoral;
+	IF fechaDF IS NOT NULL AND fechaE > fechaDF THEN
+		RAISE EXCEPTION 'Los Muertos No Votan';
 	ELSE
-		RETURN NEW;
+		IF (SELECT count(*) FROM VotaEn V INNER JOIN MesaElectoral M ON V.idMesaElectoral = M.idMesaElectoral INNER JOIN Eleccion E ON M.idEleccion = E.idEleccion
+		WHERE M.idEleccion = (SELECT idEleccion from MesaElectoral WHERE idMesaElectoral = NEW.idMesaElectoral) AND V.idCiudadano = New.idCiudadano ) >  0 THEN
+			RAISE EXCEPTION 'El ciudadano ya fue asignado a una Mesa para esta eleccion';              
+		ELSE
+			RETURN NEW;
+		END IF;
 	END IF;
 	RETURN NULL;
 	END;
