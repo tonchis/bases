@@ -170,17 +170,19 @@ INSERT INTO MesaElectoral (numero,idPresidente,idVicePresidente,idTecnico,idCent
 
 INSERT INTO MesaCandidato (idMesaElectoral) VALUES (1),(2),(3),(4),(5);
 
-INSERT INTO Fiscaliza (idMesaElectoral, idFiscal, idPartidoPolitico) VALUES (1,15,1), (1,16,2), (1,17,3);
-INSERT INTO Fiscaliza (idMesaElectoral, idFiscal, idPartidoPolitico) VALUES (1,25,1), (1,26,3), (1,27,4);
-INSERT INTO Fiscaliza (idMesaElectoral, idFiscal, idPartidoPolitico) VALUES (1,35,1), (1,36,5), (1,37,3);
-INSERT INTO Fiscaliza (idMesaElectoral, idFiscal, idPartidoPolitico) VALUES (1,45,1), (1,46,2), (1,47,4);
-INSERT INTO Fiscaliza (idMesaElectoral, idFiscal, idPartidoPolitico) VALUES (1,55,1), (1,56,4), (1,57,5);
-
 -- Candidatos
 INSERT INTO Candidato (idPersona) VALUES (10),(20),(30),(40),(50);
 
 -- Se Postulan
 INSERT INTO SePostula (idEleccion, idCandidato, idPartidoPolitico) VALUES (1,10,1),(1,20,2),(1,30,3),(1,40,4),(1,50,5);
+
+-- Fiscales
+
+INSERT INTO Fiscaliza (idMesaElectoral, idFiscal, idPartidoPolitico) VALUES (1,15,1), (1,16,2), (1,17,3);
+INSERT INTO Fiscaliza (idMesaElectoral, idFiscal, idPartidoPolitico) VALUES (1,25,1), (1,26,3), (1,27,4);
+INSERT INTO Fiscaliza (idMesaElectoral, idFiscal, idPartidoPolitico) VALUES (1,35,1), (1,36,5), (1,37,3);
+INSERT INTO Fiscaliza (idMesaElectoral, idFiscal, idPartidoPolitico) VALUES (1,45,1), (1,46,2), (1,47,4);
+INSERT INTO Fiscaliza (idMesaElectoral, idFiscal, idPartidoPolitico) VALUES (1,55,1), (1,56,4), (1,57,5);
 
 -- VotaEn
 -- Mesa 1: 10 - 19 y 1 - 9 
