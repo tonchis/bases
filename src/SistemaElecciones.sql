@@ -117,7 +117,9 @@ CREATE TABLE Eleccion(
 	idEleccion SERIAL PRIMARY KEY,
 	fecha DATE NOT NULL,
 	idTipoEleccion INT NOT NULL REFERENCES TipoEleccion,
-	idTerritorio INT NOT NULL REFERENCES Territorio
+	idTerritorio INT NOT NULL REFERENCES Territorio,
+	UNIQUE(fecha,idTipoEleccion,idTerritorio)
+	
 	);
 
 
