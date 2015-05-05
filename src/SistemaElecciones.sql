@@ -431,3 +431,23 @@ CREATE TRIGGER CheckUpdateMesaPlebiscito
 	BEFORE UPDATE ON MesaPlebiscito
 	FOR EACH ROW EXECUTE PROCEDURE CheckMesaPlebiscito();
 
+
+CREATE OR REPLACE FUNCTION CheckViveEn() RETURNS TRIGGER AS $$
+BEGIN
+	IF NEW.idPersona IN (SELECT P.idPersona FROM Persona P WHERE NEW.fechaDesde < P.fechaNacimiento OR NEW.fechaDesde > P.fechaDefuncion)
+	THEN
+		RAISE EXCEPTION 'No se puede ir a vivir a un lugar antes de haber nacido o despues de haber muerto';
+	ELSE
+		RETURN NEW;
+	END IF;
+	RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER CheckInsertViveEn
+	BEFORE INSERT ON ViveEn
+	FOR EACH ROW EXECUTE PROCEDURE CheckViveEn();
+	
+CREATE TRIGGER CheckUpdateViveEn
+	BEFORE UPDATE ON ViveEn
+	FOR EACH ROW EXECUTE PROCEDURE CheckViveEn();
