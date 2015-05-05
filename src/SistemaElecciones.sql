@@ -391,4 +391,43 @@ WITH RECURSIVE Territorios_Contenidos(idTerritorio,idTerritorioPadre,nombre) AS 
 $$ LANGUAGE 'sql';
 
 
+CREATE OR REPLACE FUNCTION CheckMesaCandidato() RETURNS TRIGGER AS $$
+BEGIN
+	IF (SELECT idTipoEleccion FROM MesaElectoral M INNER JOIN Eleccion E ON M.idEleccion = E.idEleccion
+	WHERE M.idMesaElectoral = NEW.idMesaElectoral) = 4  THEN
+		RAISE EXCEPTION 'No se puede tener MesaCandidato para plebiscito';
+	ELSE
+		RETURN NEW;
+	END IF;
+	RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER CheckInsertMesaCandidato
+	BEFORE INSERT ON MesaCandidato
+	FOR EACH ROW EXECUTE PROCEDURE CheckMesaCandidato();
+
+CREATE TRIGGER CheckUpdateMesaCandidato
+	BEFORE UPDATE ON MesaCandidato
+	FOR EACH ROW EXECUTE PROCEDURE CheckMesaCandidato();
+
+CREATE OR REPLACE FUNCTION CheckMesaPlebiscito() RETURNS TRIGGER AS $$
+BEGIN
+	IF (SELECT idTipoEleccion FROM MesaElectoral M INNER JOIN Eleccion E ON M.idEleccion = E.idEleccion
+	WHERE M.idMesaElectoral = NEW.idMesaElectoral) <> 4  THEN
+		RAISE EXCEPTION 'No se puede tener MesaPlebiscito para Elecciones que no sean del tipo Plebiscito';
+	ELSE
+		RETURN NEW;
+	END IF;
+	RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+										
+CREATE TRIGGER CheckInsertMesaPlebiscito
+	BEFORE INSERT ON MesaPlebiscito
+	FOR EACH ROW EXECUTE PROCEDURE CheckMesaPlebiscito();
+	
+CREATE TRIGGER CheckUpdateMesaPlebiscito
+	BEFORE UPDATE ON MesaPlebiscito
+	FOR EACH ROW EXECUTE PROCEDURE CheckMesaPlebiscito();
 
