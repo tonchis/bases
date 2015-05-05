@@ -143,7 +143,9 @@ CREATE TABLE MesaElectoral(
 	idTecnico INT NOT NULL REFERENCES Tecnico,
 	idCentroVotacion INT NOT NULL REFERENCES CentroVotacion,
 	idEleccion INT NOT NULL REFERENCES Eleccion,
-	UNIQUE(numero,idEleccion)
+	UNIQUE(numero,idEleccion),
+	CHECK(idPresidente <> idVicePresidente AND idVicePresidente <> idTecnico AND idPresidente <> idTecnico)
+	
 	);
 
 
@@ -253,15 +255,51 @@ CREATE TRIGGER CheckUpdateVotosCandidato
 	FOR EACH ROW EXECUTE PROCEDURE checkVotosCandidato();
 
 
+CREATE OR REPLACE FUNCTION  AutoridadesEleccion(idE int) RETURNS TABLE (idPersona int) AS $$
+BEGIN
+	RETURN query SELECT idPresidente from MesaElectoral Where idEleccion = idE;
+	RETURN query SELECT idVicePresidente from MesaElectoral Where idEleccion = idE;
+	RETURN query SELECT idTecnico from MesaElectoral Where idEleccion = idE;
+	RETURN query SELECT idFiscal from Fiscaliza F INNER JOIN MesaElectoral M ON F.idMesaElectoral = M.idMesaElectoral WHERE M.idEleccion = idE;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION checkAutoridad() RETURNS TRIGGER AS $$
+	BEGIN
+	IF ( NEW.idPresidente IN ( SELECT AutoridadesEleccion(NEW.idEleccion) ) OR
+	NEW.idVicePresidente IN ( SELECT AutoridadesEleccion(NEW.idEleccion) ) OR
+	NEW.idTecnico IN ( SELECT AutoridadesEleccion(NEW.idEleccion) ) ) THEN
+		RAISE EXCEPTION 'Alguna de las autoridades seleccionadas para esta mesa ya es Autoridad para otra mesa';
+	ELSE
+		RETURN NEW;
+	END IF;
+	RETURN NULL;
+	END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER CheckInsertMesaElectoral
+	BEFORE INSERT ON MesaElectoral
+	FOR EACH ROW EXECUTE PROCEDURE checkAutoridad();
+
+CREATE TRIGGER CheckUpdateMesaElectoral
+	BEFORE UPDATE ON MesaElectoral
+	FOR EACH ROW EXECUTE PROCEDURE checkAutoridad();
 
 CREATE OR REPLACE FUNCTION checkFiscal() RETURNS TRIGGER AS $$
+	DECLARE
+	idE	INT;
 	BEGIN
 	IF (SELECT count(*) FROM MesaElectoral M INNER JOIN Eleccion E ON M.idEleccion = E.idEleccion
 		INNER JOIN SePostula S on E.idEleccion =  S.idEleccion
 		WHERE M.idMesaElectoral = NEW.idMesaElectoral AND S.idPartidoPolitico = NEW.idPartidoPolitico) = 0 THEN
-		RAISE EXCEPTION 'El partido a fiscalizar no esta postulado';              
+		RAISE EXCEPTION 'El partido a fiscalizar no esta postulado o la Mesa no existe';              
 	ELSE
-		RETURN NEW;
+		SELECT idEleccion INTO idE FROM MesaElectoral WHERE idMesaElectoral = NEW.idMesaElectoral;
+		IF NEW.idFiscal IN  (SELECT AutoridadesEleccion(idE)) THEN
+			RAISE EXCEPTION 'El fiscal ya es autoridad de Mesa o la Mesa no existe';
+		ELSE
+			RETURN NEW;
+		END IF;
 	END IF;
 	RETURN NULL;
 	END;
@@ -276,3 +314,6 @@ CREATE TRIGGER CheckInsertFiscaliza
 CREATE TRIGGER CheckUpdateFiscaliza
 	BEFORE UPDATE ON Fiscaliza 
 	FOR EACH ROW EXECUTE PROCEDURE checkFiscal();
+
+
+
