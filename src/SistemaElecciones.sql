@@ -306,6 +306,8 @@ CREATE OR REPLACE FUNCTION checkFiscal() RETURNS TRIGGER AS $$
 $$ LANGUAGE plpgsql;
 
 
+
+
 CREATE TRIGGER CheckInsertFiscaliza
 	BEFORE INSERT ON Fiscaliza 
 	FOR EACH ROW EXECUTE PROCEDURE checkFiscal();
@@ -320,17 +322,22 @@ CREATE OR REPLACE FUNCTION checkVotaEn() RETURNS TRIGGER AS $$
 	DECLARE
 	fechaDF date;
 	fechaE date;
+	edad INT;
 	BEGIN
-	SELECT fechaDefuncion INTO fechaDF FROM Persona WHERE idPersona = NEW.idCiudadano and fechaDefuncion IS NOT NULL;  
+	SELECT date_part('year',age(fechaNacimiento)),fechaDefuncion  INTO edad,fechaDF FROM Persona WHERE idPersona = NEW.idCiudadano ;  
 	SELECT fecha INTO fechaE FROM MesaElectoral M INNER JOIN Eleccion E ON M.idEleccion = E.idEleccion WHERE M.idMesaElectoral = NEW.idMesaElectoral;
-	IF fechaDF IS NOT NULL AND fechaE > fechaDF THEN
-		RAISE EXCEPTION 'Los Muertos No Votan';
+	IF edad < 16 THEN
+		RAISE EXCEPTION 'Solo los mayores de 16 años pueden votar. No insista.';
 	ELSE
-		IF (SELECT count(*) FROM VotaEn V INNER JOIN MesaElectoral M ON V.idMesaElectoral = M.idMesaElectoral INNER JOIN Eleccion E ON M.idEleccion = E.idEleccion
-		WHERE M.idEleccion = (SELECT idEleccion from MesaElectoral WHERE idMesaElectoral = NEW.idMesaElectoral) AND V.idCiudadano = New.idCiudadano ) >  0 THEN
-			RAISE EXCEPTION 'El ciudadano ya fue asignado a una Mesa para esta eleccion';              
+		IF fechaDF IS NOT NULL AND fechaE > fechaDF THEN
+			RAISE EXCEPTION 'Los Muertos No Votan';
 		ELSE
-			RETURN NEW;
+			IF (SELECT count(*) FROM VotaEn V INNER JOIN MesaElectoral M ON V.idMesaElectoral = M.idMesaElectoral INNER JOIN Eleccion E ON M.idEleccion = E.idEleccion
+			WHERE M.idEleccion = (SELECT idEleccion from MesaElectoral WHERE idMesaElectoral = NEW.idMesaElectoral) AND V.idCiudadano = New.idCiudadano ) >  0 THEN
+				RAISE EXCEPTION 'El ciudadano ya fue asignado a una Mesa para esta eleccion';              
+			ELSE
+				RETURN NEW;
+			END IF;
 		END IF;
 	END IF;
 	RETURN NULL;
@@ -346,5 +353,18 @@ CREATE TRIGGER CheckInsertVotaEn
 CREATE TRIGGER CheckUpdateVotaEn
 	BEFORE UPDATE ON VotaEn
 	FOR EACH ROW EXECUTE PROCEDURE checkVotaEn();
+
+/** Obtiene idTerritorio,iTipoTerritorio y nombre de Territorios contenidos para un idTerritorio dado */
+CREATE OR REPLACE FUNCTION obtenerTerritorios(id INT) RETURNS TABLE (idT INT,idTT INT,n varchar(255)) AS $$
+WITH RECURSIVE Territorios_Contenidos(idTerritorio,idTerritorioPadre,nombre) AS (
+	SELECT idTerritorio,idTerritorioPadre,nombre FROM Territorio WHERE idTerritorio = $1
+	UNION ALL
+	   SELECT t.idTerritorio,t.idTerritorioPadre,t.nombre
+	    FROM Territorios_Contenidos tc,territorio t
+	    WHERE t.idterritorioPadre = tc.idterritorio
+	  )
+	SELECT * FROM Territorios_Contenidos;
+$$ LANGUAGE 'sql';
+
 
 
