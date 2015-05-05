@@ -319,6 +319,28 @@ CREATE TRIGGER CheckUpdateFiscaliza
 	BEFORE UPDATE ON Fiscaliza 
 	FOR EACH ROW EXECUTE PROCEDURE checkFiscal();
 
+CREATE OR REPLACE FUNCTION checkAutoridadDeMesa() RETURNS TRIGGER AS $$
+	DECLARE
+	edad INT;
+	BEGIN
+	SELECT date_part('year',age(fechaNacimiento))  INTO edad FROM Persona WHERE idPersona = NEW.idPersona AND fechaDefuncion IS NULL ;
+	IF edad < 16 THEN
+		RAISE EXCEPTION 'Hay que tener mas de 16 años y estar vivo para ser autoridad de Mesa';
+	ELSE
+		RETURN NEW;
+	END IF;
+	RETURN NULL;
+	END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER CheckInsertAutoridadDeMesa
+	BEFORE INSERT ON AutoridadDeMesa
+	FOR EACH ROW EXECUTE PROCEDURE checkAutoridadDeMesa();
+
+
+CREATE TRIGGER CheckUpdateAutoridadDeMesa
+	BEFORE UPDATE ON AutoridadDeMesa
+	FOR EACH ROW EXECUTE PROCEDURE checkAutoridadDeMesa();
 
 CREATE OR REPLACE FUNCTION checkVotaEn() RETURNS TRIGGER AS $$
 	DECLARE
