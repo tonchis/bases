@@ -316,4 +316,26 @@ CREATE TRIGGER CheckUpdateFiscaliza
 	FOR EACH ROW EXECUTE PROCEDURE checkFiscal();
 
 
+CREATE OR REPLACE FUNCTION checkVotaEn() RETURNS TRIGGER AS $$
+	BEGIN
+	IF (SELECT count(*) FROM VotaEn V INNER JOIN MesaElectoral M ON V.idMesaElectoral = M.idMesaElectoral INNER JOIN Eleccion E ON M.idEleccion = E.idEleccion
+		WHERE M.idEleccion = (SELECT idEleccion from MesaElectoral WHERE idMesaElectoral = NEW.idMesaElectoral) AND V.idCiudadano = New.idCiudadano ) >  0 THEN
+		RAISE EXCEPTION 'El ciudadano ya fue asignado a una Mesa para esta eleccion';              
+	ELSE
+		RETURN NEW;
+	END IF;
+	RETURN NULL;
+	END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER CheckInsertVotaEn
+	BEFORE INSERT ON VotaEn
+	FOR EACH ROW EXECUTE PROCEDURE checkVotaEn();
+
+
+CREATE TRIGGER CheckUpdateVotaEn
+	BEFORE UPDATE ON VotaEn
+	FOR EACH ROW EXECUTE PROCEDURE checkVotaEn();
+
 
