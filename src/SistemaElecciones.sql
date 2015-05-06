@@ -451,3 +451,41 @@ CREATE TRIGGER CheckInsertViveEn
 CREATE TRIGGER CheckUpdateViveEn
 	BEFORE UPDATE ON ViveEn
 	FOR EACH ROW EXECUTE PROCEDURE CheckViveEn();
+
+
+-- Voy a buscar la mesa donde la persona esta tratando de votar y me fijo que el centro de votacion de la mesa este en el
+-- mismo territorio donde vive la persona al momento de la eleccion.
+-- Para eso me traigo, de los lugares donde vivio la persona, aquel donde vive desde antes de la eleccion pero no hay otro 
+-- donde haya vivido despues de ese pero tambien antes de la eleccion.
+CREATE OR REPLACE FUNCTION CheckVotaEnDondeVive() RETURNS TRIGGER AS $$
+BEGIN
+	IF NOT EXISTS ( select me.idMesaElectoral
+					from MesaElectoral me
+					inner join CentroVotacion ce on ce.idCentroVotacion = me.idCentroVotacion
+					inner join Eleccion e on e.idEleccion = me.idEleccion
+					inner join ViveEn ve on ve.idPersona = NEW.idCiudadano
+					where NEW.idMesaElectoral = me.idMesaElectoral
+					and ve.idTerritorio = ce.idTerritorio
+					and ve.fechaDesde < e.fecha
+					and not exists (select ve2.fechaDesde
+									from ViveEn ve2
+									where ve2.idPersona = NEW.idCiudadano
+									and ve2.fechaDesde > ve.fechaDesde 
+									and ve2.fechaDesde < e.fecha)
+		)
+	THEN
+		RAISE EXCEPTION 'No se puede asignar a una persona para que vote en una mesa que esta en un territorio donde la persona no vive al momento de la eleccion';
+	ELSE
+		RETURN NEW;
+	END IF;
+	RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER CheckVotaEnDondeViveInsert
+	BEFORE INSERT ON VotaEn
+	FOR EACH ROW EXECUTE PROCEDURE CheckVotaEnDondeVive();
+	
+CREATE TRIGGER CheckVotaEnDondeViveUpdate
+	BEFORE UPDATE ON VotaEn
+	FOR EACH ROW EXECUTE PROCEDURE CheckVotaEnDondeVive();
