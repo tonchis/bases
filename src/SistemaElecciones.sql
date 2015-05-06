@@ -287,37 +287,51 @@ CREATE TRIGGER CheckUpdateMesaElectoral
 	BEFORE UPDATE ON MesaElectoral
 	FOR EACH ROW EXECUTE PROCEDURE checkAutoridad();
 
-CREATE OR REPLACE FUNCTION checkFiscal() RETURNS TRIGGER AS $$
-	DECLARE
-	idE	INT;
+CREATE OR REPLACE FUNCTION checkPartidoDeFiscalPostulado() RETURNS TRIGGER AS $$
 	BEGIN
 	IF (SELECT count(*) FROM MesaElectoral M INNER JOIN Eleccion E ON M.idEleccion = E.idEleccion
 		INNER JOIN SePostula S on E.idEleccion =  S.idEleccion
 		WHERE M.idMesaElectoral = NEW.idMesaElectoral AND S.idPartidoPolitico = NEW.idPartidoPolitico) = 0 THEN
 		RAISE EXCEPTION 'El partido a fiscalizar no esta postulado o la Mesa no existe';              
 	ELSE
-		SELECT idEleccion INTO idE FROM MesaElectoral WHERE idMesaElectoral = NEW.idMesaElectoral;
-		IF NEW.idFiscal IN  (SELECT AutoridadesEleccion(idE)) THEN
-			RAISE EXCEPTION 'El fiscal ya es autoridad de Mesa o la Mesa no existe';
-		ELSE
-			RETURN NEW;
-		END IF;
+		RETURN NEW;
+	END IF;
+	RETURN NULL;
+	END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER CheckInsertPartidoDeFiscalPostuladoFiscaliza
+	BEFORE INSERT ON Fiscaliza 
+	FOR EACH ROW EXECUTE PROCEDURE checkPartidoDeFiscalPostulado();
+
+
+CREATE TRIGGER CheckUpdatePartidoDeFiscalPostuladoFiscaliza
+	BEFORE UPDATE ON Fiscaliza 
+	FOR EACH ROW EXECUTE PROCEDURE checkPartidoDeFiscalPostulado();
+
+CREATE OR REPLACE FUNCTION checkFiscalNoEsAutoridadParaEleccion() RETURNS TRIGGER AS $$
+	DECLARE
+	idE	INT;
+	BEGIN
+	SELECT idEleccion INTO idE FROM MesaElectoral WHERE idMesaElectoral = NEW.idMesaElectoral;
+	IF NEW.idFiscal IN  (SELECT AutoridadesEleccion(idE)) THEN
+		RAISE EXCEPTION 'El fiscal ya es autoridad de Mesa o la Mesa no existe';
+	ELSE
+		RETURN NEW;
 	END IF;
 	RETURN NULL;
 	END;
 $$ LANGUAGE plpgsql;
 
 
-
-
-CREATE TRIGGER CheckInsertFiscaliza
+CREATE TRIGGER CheckInsertNoEsAutoridadParaEleccionFiscaliza
 	BEFORE INSERT ON Fiscaliza 
-	FOR EACH ROW EXECUTE PROCEDURE checkFiscal();
+	FOR EACH ROW EXECUTE PROCEDURE checkFiscalNoEsAutoridadParaEleccion();
 
 
-CREATE TRIGGER CheckUpdateFiscaliza
+CREATE TRIGGER CheckUpdateNoEsAutoridadParaEleccionFiscaliza
 	BEFORE UPDATE ON Fiscaliza 
-	FOR EACH ROW EXECUTE PROCEDURE checkFiscal();
+	FOR EACH ROW EXECUTE PROCEDURE checkFiscalNoEsAutoridadParaEleccion();
 
 CREATE OR REPLACE FUNCTION checkAutoridadDeMesa() RETURNS TRIGGER AS $$
 	DECLARE
