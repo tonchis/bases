@@ -489,3 +489,45 @@ CREATE TRIGGER CheckVotaEnDondeViveInsert
 CREATE TRIGGER CheckVotaEnDondeViveUpdate
 	BEFORE UPDATE ON VotaEn
 	FOR EACH ROW EXECUTE PROCEDURE CheckVotaEnDondeVive();
+
+
+
+-- Quiero que el candidato viva en un territorio contenido en el territorio de la eleccion desde hace 2 años o mas
+-- y que no se haya mudado a un nuevo territorio despues de eso pero antes de la fecha de la eleccion
+-- si ese nuevo territorio no estuviera contenido dentro del territorio de la eleccion
+CREATE OR REPLACE FUNCTION CheckSePostula() RETURNS TRIGGER AS $$
+BEGIN
+	IF NOT EXISTS ( select ve.idTerritorio 
+					from Eleccion e
+					inner join ViveEn ve on ve.idPersona = NEW.idCandidato
+					where e.idEleccion = NEW.idEleccion
+					and ve.fechaDesde < (e.fecha-INTERVAL '2 years')
+					and ve.idTerritorio in (select idT from obtenerTerritorios(e.idTerritorio))
+					and not exists (
+						select ve2.idTerritorio
+						from ViveEn ve2 
+						where ve2.idPersona = NEW.idCandidato
+						and ve2.idTerritorio not in (select idT from obtenerTerritorios(e.idTerritorio))
+						and ve2.fechaDesde > ve.fechaDesde
+						and ve2.fechaDesde < e.fecha
+					)
+		)
+	THEN
+		RAISE EXCEPTION 'No se puede postular a una eleccion si no hace al menos 2 años que vive en el territorio de la eleccion';
+	ELSE
+		RETURN NEW;
+	END IF;
+	RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER CheckSePostulaInsert
+	BEFORE INSERT ON SePostula
+	FOR EACH ROW EXECUTE PROCEDURE CheckSePostula();
+	
+CREATE TRIGGER CheckSePostulaUpdate
+	BEFORE UPDATE ON SePostula
+	FOR EACH ROW EXECUTE PROCEDURE CheckSePostula();
+
+
+
