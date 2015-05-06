@@ -531,3 +531,42 @@ CREATE TRIGGER CheckSePostulaUpdate
 
 
 
+CREATE OR REPLACE FUNCTION CheckCentroVotacionEnCiudad() RETURNS TRIGGER AS $$
+	BEGIN
+	IF (SELECT count(*) FROM Territorio WHERE idTerritorio=NEW.idTerritorio AND idTipoTerritorio=3) = 0 THEN
+		RAISE EXCEPTION 'El centro de votacion solo puede pertenecer a ciudades';              
+	ELSE
+		RETURN NEW;
+	END IF;
+	RETURN NULL;
+	END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER CheckCentroVotacionEnCiudadInsert
+	BEFORE INSERT ON CentroVotacion
+	FOR EACH ROW EXECUTE PROCEDURE CheckCentroVotacionEnCiudad();
+
+
+
+CREATE OR REPLACE FUNCTION CheckTerritorioMesaEnTerritorioEleccion() RETURNS TRIGGER AS $$
+DECLARE
+	territorioCentro int;
+	territorioEleccion int;
+BEGIN
+	select cv.idTerritorio into territorioCentro from CentroVotacion cv where cv.idCentroVotacion = NEW.idCentroVotacion;
+	select e.idTerritorio into territorioEleccion from Eleccion e where e.idEleccion = NEW.idEleccion;
+	IF territorioCentro NOT IN (select idT from obtenerTerritorios(territorioEleccion))
+	THEN
+		RAISE EXCEPTION 'El territorio del centro de votacion de la mesa electoral debe estar contenido en el territorio de la eleccion a la que corresponde la mesa';
+	ELSE
+		RETURN NEW;
+	END IF;
+	RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER CheckTerritorioMesaEnTerritorioEleccionInsert
+	BEFORE INSERT ON MesaElectoral
+	FOR EACH ROW EXECUTE PROCEDURE CheckTerritorioMesaEnTerritorioEleccion();
+	
