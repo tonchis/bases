@@ -618,4 +618,55 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER CheckTerritorioMesaEnTerritorioEleccionInsert
 	BEFORE INSERT ON MesaElectoral
 	FOR EACH ROW EXECUTE PROCEDURE CheckTerritorioMesaEnTerritorioEleccion();
+
 	
+	
+
+CREATE OR REPLACE FUNCTION checkVotosCandidatoCantidad() RETURNS TRIGGER AS $$
+DECLARE
+	votosMesa INT;
+	votosCandidato INT; 
+BEGIN
+	SELECT count(*) INTO VotosMesa FROM VotaEn WHERE idMesaElectoral = NEW.idMesaElectoral AND Hora IS NULL;
+	SELECT SUM(Cantidad) INTO votosCandidato FROM VotosCandidato WHERE idMesaElectoral = NEW.idMesaElectoral;
+	IF votosCandidato > votosMesa THEN
+	      RAISE EXCEPTION 'La suma de votos no puede ser mayor a la cantidad de gente que voto en la Mesa';
+	ELSE
+		RETURN NEW;
+	END IF;
+	RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER CheckInsertVotosCandidatoCantidad
+	BEFORE INSERT ON VotosCandidato
+	FOR EACH ROW EXECUTE PROCEDURE checkVotosCandidatoCantidad();
+
+CREATE TRIGGER CheckUpdateVotosCandidatoCantidad
+	BEFORE UPDATE ON VotosCandidato
+	FOR EACH ROW EXECUTE PROCEDURE checkVotosCandidatoCantidad();
+
+	
+CREATE OR REPLACE FUNCTION checkVotosPlebiscitoCantidad() RETURNS TRIGGER AS $$
+DECLARE
+	votosMesa INT;
+	VotosPlebiscito INT; 
+BEGIN
+	SELECT count(*) INTO VotosMesa FROM VotaEn WHERE idMesaElectoral = NEW.idMesaElectoral AND Hora IS NULL;
+	SELECT SUM(Cantidad) INTO VotosPlebiscito FROM VotosPlebiscito WHERE idMesaElectoral = NEW.idMesaElectoral;
+	IF VotosPlebiscito > votosMesa THEN
+	      RAISE EXCEPTION 'La suma de votos no puede ser mayor a la cantidad de gente que voto en la Mesa';
+	ELSE
+		RETURN NEW;
+	END IF;
+	RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER CheckInsertVotosPlebiscitoCantidad
+	BEFORE INSERT ON VotosPlebiscito
+	FOR EACH ROW EXECUTE PROCEDURE checkVotosPlebiscitoCantidad();
+
+CREATE TRIGGER CheckUpdateVotosPlebiscitoCantidad
+	BEFORE UPDATE ON VotosPlebiscito
+	FOR EACH ROW EXECUTE PROCEDURE checkVotosPlebiscitoCantidad();
