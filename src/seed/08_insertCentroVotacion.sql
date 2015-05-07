@@ -1,6 +1,0 @@
--- 10 Centros de votacion en CABA (id 8) 
-INSERT INTO CentroVotacion (direccion,idTerritorio,idCamioneta) VALUES ('Ap #405-4643 Ut St.',8,1),('3128 Ornare, Rd.',8,2),('P.O. Box 673, 360 Faucibus Road',8,2),('498-997 Non, Road',8,3),('Ap #376-1676 Aptent Ave',8,3),('P.O. Box 585, 6095 Elit. Ave',8,1),('701-5126 Lorem, Ave',8,3),('Ap #748-8618 Suscipit Rd.',8,2),('Ap #107-1108 Ut Rd.',8,2),('725-7812 Tempus Av.',8,2);
-
--- Otros 20 en las demas ciudades
-INSERT INTO CentroVotacion (direccion,idTerritorio,idCamioneta) VALUES ('423 Eu Street',12,4),('P.O. Box 150, 5175 Feugiat. Road',12,5),('Ap #827-8494 Scelerisque St.',12,10),('1287 Tellus Ave',9,7),('Ap #399-3077 Sed Street',12,9),('P.O. Box 393, 2719 Feugiat. St.',10,8),('2181 Eros Rd.',10,9),('1219 Eu Rd.',9,5),('P.O. Box 711, 3973 At St.',9,4),('P.O. Box 789, 4804 Purus St.',11,8);
-INSERT INTO CentroVotacion (direccion,idTerritorio,idCamioneta) VALUES ('7253 Aliquam St.',10,10),('Ap #180-936 Ultricies Avenue',9,9),('6699 Fusce St.',9,8),('P.O. Box 928, 1884 Pede. Rd.',9,8),('Ap #685-4386 Ut Avenue',11,7),('4534 Sed, Rd.',10,5),('978-8441 Ridiculus Road',10,8),('170-5708 Ipsum. Av.',11,7),('9445 Cum Rd.',10,7),('521-3810 Sed St.',11,5);
