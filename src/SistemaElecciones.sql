@@ -650,11 +650,12 @@ CREATE TRIGGER CheckUpdateVotosCandidatoCantidad
 CREATE OR REPLACE FUNCTION checkVotosPlebiscitoCantidad() RETURNS TRIGGER AS $$
 DECLARE
 	votosMesa INT;
-	VotosPlebiscito INT; 
+	VotosAFavorPlebiscito INT; 
+	VotosEnContraPlebiscito INT;
 BEGIN
 	SELECT count(*) INTO VotosMesa FROM VotaEn WHERE idMesaElectoral = NEW.idMesaElectoral AND Hora IS NULL;
-	SELECT SUM(Cantidad) INTO VotosPlebiscito FROM VotosPlebiscito WHERE idMesaElectoral = NEW.idMesaElectoral;
-	IF VotosPlebiscito > votosMesa THEN
+	SELECT SUM(aFavor),SUM(enContra) INTO VotosAFavorPlebiscito,VotosEnContraPlebiscito FROM VotosPlebiscito WHERE idMesaElectoral = NEW.idMesaElectoral;
+	IF VotosAFavorPlebiscito + VotosEnContraPlebiscito  > votosMesa THEN
 	      RAISE EXCEPTION 'La suma de votos no puede ser mayor a la cantidad de gente que voto en la Mesa';
 	ELSE
 		RETURN NEW;
