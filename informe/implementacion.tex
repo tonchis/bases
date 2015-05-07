@@ -695,6 +695,7 @@ LANGUAGE sql;
 \subsubsection{Consultar quiénes fueron los partidos políticos que obtuvieron más del 20\% en las últimas cinco elecciones provinciales a gobernador}
 
 \indent \indent Es necesario aclarar que se entendió para esta funcionalidad que se pedían los partidos políticos que pasaron el 20\% en cada una de las últimas cinco elecciones a gobernador.\\
+\indent Además, en caso de que no llegaran a haber ocurrido por lo menos cinco elecciones a gobernador, entonces se toma en cuenta el total de las elecciones a gobernador.\\
 
 \begin{verbatim}
 CREATE OR REPLACE FUNCTION GetPartidosQuePasaronLos20EnLasUltimasCincoParaGobernador()
