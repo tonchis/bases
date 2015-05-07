@@ -210,7 +210,6 @@ CREATE TABLE Fiscaliza(
 CREATE TABLE VotaEn(
 	idCiudadano INT NOT NULL REFERENCES Ciudadano,
 	idMesaElectoral INT NOT NULL REFERENCES MesaElectoral,
-	fecha DATE,
 	hora TIME,
 	PRIMARY KEY(idCiudadano,idMesaElectoral)
 	);
