@@ -2,5 +2,180 @@
 
 
 Para poder verificar que la cantidad de votos no se mayor a la cantidad de gente que votó se creo un trigger que verifica que la suma de  cantidad de votos de todos los  candidatos en una MesaCandidato no supere a la suma de Ciudadanos que votaron en la Mesa. Como puede haber ciudadanos que no voten o que voten en blanco no se verifica la igualdad. 
-	El trigger obliga  a que primero se tenga que actualizar la hora de voto en VotaEn para poder agregar el voto a cantidad. 
+    El trigger obliga  a que primero se tenga que actualizar la hora de voto en VotaEn para poder agregar el voto a cantidad. 
 
+\subsection{Triggers}
+
+\subsubsection{}
+
+\begin{verbatim}
+CREATE OR REPLACE FUNCTION OriundaDeCiudad() RETURNS TRIGGER AS $$
+    BEGIN
+    IF (SELECT count(*) 
+        FROM Territorio 
+        WHERE idTerritorio=NEW.idTerritorio AND idTipoTerritorio=3) = 0 
+        THEN
+            RAISE EXCEPTION 'Solo puede ser oriundo de una ciudad';              
+        ELSE
+            RETURN NEW;
+    END IF;
+    RETURN NULL;
+    END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER CheckInsertPersona
+    BEFORE INSERT ON Persona
+    FOR EACH ROW EXECUTE PROCEDURE OriundaDeCiudad();
+
+\end{verbatim}
+
+\subsubsection{}
+\begin{verbatim}
+
+CREATE OR REPLACE FUNCTION checkVotosCandidato() RETURNS TRIGGER AS $$
+    BEGIN
+    IF (SELECT count(*) 
+        FROM MesaElectoral M 
+        INNER JOIN Eleccion E ON M.idEleccion = E.idEleccion
+        INNER JOIN SePostula S on E.idEleccion =  S.idEleccion
+        WHERE S.idCandidato = NEW.idCandidato 
+        AND M.idMesaElectoral = NEW.idMesaElectoral ) = 0
+        THEN
+            RAISE EXCEPTION 
+            'El candidato se ha postulado para la eleccion de la 
+            Mesa';              
+        ELSE
+            RETURN NEW;
+    END IF;
+    RETURN NULL;
+    END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER CheckInsertVotosCandidato
+    BEFORE INSERT ON VotosCandidato
+    FOR EACH ROW EXECUTE PROCEDURE checkVotosCandidato();
+
+
+CREATE TRIGGER CheckUpdateVotosCandidato
+    BEFORE UPDATE ON VotosCandidato
+    FOR EACH ROW EXECUTE PROCEDURE checkVotosCandidato();
+
+
+\end{verbatim}
+\subsection{Stored Procedures para funcionalidades pedidas}
+
+\subsubsection{Obtener los ganadores del las elecciones transcurridas en el último año}
+
+\indent Se consideró que las elecciones del último año son aquellas que se realizaron a lo sumo hasta un año antes de la fecha de la consulta.\\
+
+\begin{verbatim}
+CREATE OR REPLACE FUNCTION GetGanadoresUltimoAnio()
+RETURNS TABLE(idEleccion INTEGER, Nombre CHARACTER VARYING(510),
+              TipoDocumento CHARACTER VARYING(255), NumeroDocumento INT) AS
+
+$BODY$
+
+SELECT e.idEleccion, p.Nombre||''||p.Apellido, d.Tipo, d.Numero
+FROM Eleccion e
+INNER JOIN MesaElectoral me ON e.idEleccion = me.idEleccion
+INNER JOIN VotosCandidato vc ON me.idMesaElectoral = vc.idMesaElectoral
+INNER JOIN Persona p ON p.idPersona = vc.idCandidato
+INNER JOIN Documento d ON d.idPersona= p.idPersona
+WHERE (e.Fecha BETWEEN (now()-INTERVAL '365 days') AND now())
+GROUP BY e.idEleccion, p.Nombre,p.Apellido,d.Tipo, d.Numero
+HAVING NOT EXISTS
+    (SELECT sum(vc2.Cantidad)
+    FROM Eleccion e2
+    INNER JOIN MesaElectoral me2 ON me2.idEleccion = e2.idEleccion
+    INNER JOIN MesaCandidato mc2 ON me2.idMesaElectoral = mc2.idMesaElectoral
+    INNER JOIN VotosCandidato vc2 ON vc2.idMesaElectoral = mc2.idMesaElectoral
+    WHERE e2.idEleccion = e.idEleccion
+    GROUP BY vc2.idCandidato
+    HAVING SUM(vc2.Cantidad) > SUM(vc.Cantidad))
+
+$BODY$
+
+LANGUAGE sql;
+
+\end{verbatim}
+
+\subsubsection{Consultar las cinco personas que más tarde fueron a votar antes de terminar la votación por cada centro electoral en una elección}
+
+\begin{verbatim}
+CREATE OR REPLACE FUNCTION GetVotantesQueMasTardeVotaronPorCentroElectoral(eleccionID INTEGER)
+RETURNS TABLE(idCentroVotacion INTEGER,
+              DireccionCentroElectoral CHARACTER VARYING(255),
+              Nombre CHARACTER VARYING(510), TipoDocumento CHARACTER
+              VARYING(255), NumeroDocumento INT) AS
+
+$BODY$
+
+SELECT cv.idCentroVotacion, cv.Direccion, p.Nombre||' '||p.Apellido, d.Tipo, d.Numero 
+FROM Eleccion e
+INNER JOIN  MesaElectoral me ON me.idEleccion = e.idEleccion
+INNER JOIN CentroVotacion cv ON cv.idCentroVotacion = me.idCentroVotacion
+INNER JOIN VotaEn ve ON me.idMesaElectoral = ve.idMesaElectoral
+INNER JOIN Ciudadano c ON ve.idCiudadano = c.idPersona
+INNER JOIN Persona p ON c.idPersona =  p.idPersona
+INNER JOIN Documento d ON d.idPersona = p.idPersona
+WHERE e.idEleccion = eleccionID
+AND c.idPersona IN (
+    SELECT ve2.idCiudadano
+    FROM CentroVotacion cv2
+    INNER JOIN MesaElectoral me ON cv2.idCentroVotacion = me.idCentroVotacion
+    INNER JOIN VotaEn ve2 ON me.idMesaElectoral = ve2.idMesaElectoral
+    WHERE cv2.idCentroVotacion = cv.idCentroVotacion
+    ORDER BY ve2.fecha, ve2.hora DESC
+    LIMIT 5
+  )
+ORDER BY cv.idCentroVotacion, ve.fecha, ve.hora
+
+$BODY$
+
+LANGUAGE sql;
+
+\end{verbatim}
+
+\subsubsection{Consultar quiénes fueron los partidos políticos que obtuvieron más del 20\% en las últimas cinco elecciones provinciales a gobernador}
+
+\begin{verbatim}
+CREATE OR REPLACE FUNCTION GetPartidosQuePasaronLos20EnLasUltimasCincoParaGobernador()
+RETURNS TABLE(PartidoPolitico CHARACTER VARYING (255)) AS
+$BODY$
+SELECT Nombre FROM (
+    SELECT e.idEleccion , pp.Nombre
+    FROM Eleccion e
+    INNER JOIN MesaElectoral me ON e.idEleccion = me.idEleccion
+    INNER JOIN MesaCandidato mc ON me.idMesaElectoral = mc.idMesaElectoral
+    INNER JOIN VotosCandidato vc ON vc.idMesaElectoral = mc.idMesaElectoral
+    INNER JOIN Candidato c ON c.idPersona = vc.idCandidato 
+    INNER JOIN Persona p ON p.idPersona = c.idPersona
+    INNER JOIN SePostula sp ON sp.idCandidato = c.idPersona and sp.idEleccion = e.idEleccion
+    INNER JOIN PartidoPolitico pp ON pp.idPartidoPolitico = sp.idPartidoPolitico
+    WHERE e.idEleccion IN (
+        SELECT idEleccion
+        FROM Eleccion 
+        INNER JOIN TipoEleccion ON Eleccion.idTipoEleccion = TipoEleccion.idTipoEleccion
+        WHERE TipoEleccion.idTipoEleccion = 2
+        ORDER BY Eleccion.Fecha DESC
+        LIMIT 5)
+    GROUP BY e.idEleccion,pp.idPartidoPolitico, pp.Nombre
+    HAVING ((SUM(vc.Cantidad)) *100 /
+            (SELECT SUM(vc2.Cantidad) 
+             FROM Eleccion e2 
+             INNER JOIN MesaElectoral me2 ON e2.idEleccion = me2.idEleccion
+             INNER JOIN VotosCandidato vc2 ON me2.idMesaElectoral = vc2.idMesaElectoral
+             WHERE e2.idEleccion = e.idEleccion) > 20)
+    ) AS PartidosConMasDe20PorEleccion
+    GROUP BY Nombre
+    HAVING COUNT(Nombre) =  CASE WHEN (SELECT COUNT(*) FROM Eleccion WHERE idTipoEleccion = 2) > 5 
+                THEN 5 
+                ELSE (SELECT COUNT(*) FROM Eleccion WHERE idTipoEleccion = 2)
+                END  
+$BODY$
+
+LANGUAGE sql;
+
+\end{verbatim}
