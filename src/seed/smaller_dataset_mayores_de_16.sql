@@ -75,7 +75,7 @@ INSERT INTO PartidoPolitico (nombre) VALUES ('negro'); -- 8
 INSERT INTO PartidoPolitico (nombre) VALUES ('gris'); -- 9
 
 -- Camionetas
-INSERT INTO Camioneta (idPersona) VALUES (1), (2), (3);
+INSERT INTO Camioneta (idPersona,patente) VALUES (1,'AAA001'), (2,'AAA002'), (3,'AAA003');
 
 -- Centro Votacion
 INSERT INTO CentroVotacion (direccion,idTerritorio,idCamioneta) VALUES ('Esmeralda 700',8,1); -- 1

@@ -125,7 +125,8 @@ CREATE TABLE Eleccion(
 
 CREATE TABLE Camioneta(
 	idCamioneta SERIAL PRIMARY KEY,
-	idPersona INT NOT NULL REFERENCES Persona
+	idPersona INT NOT NULL REFERENCES Persona,
+	patente varchar(255) NOT NULL
 	);
 
 
