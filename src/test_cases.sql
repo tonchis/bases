@@ -1,8 +1,48 @@
--- Oriundo de pais - Raise Exception: Solo puede ser oriundo de una ciudad
-INSERT INTO Persona (nombre,apellido,fechaNacimiento,idTerritorio) VALUES ('Juan','Fuentes','14/08/1964',1);
 
--- Oriundo de provincia - Raise Exception: Solo puede ser oriundo de una ciudad
+-- Eleccion: idTipoEleccion debe existir en TipoEleccion
+INSERT INTO Eleccion (fecha,idTipoEleccion,idTerritorio) VALUES('11/05/2015',5,1);
+--Resultado: Exception: insert or update on table "eleccion" violates foreign key constraint "eleccion_idtipoeleccion_fkey"
+INSERT INTO Eleccion (fecha,idTipoEleccion,idTerritorio) VALUES('11/05/2015',1,1);
+--Resultado: OK 
+
+-- Eleccion: idTerritorio debe existir en Territorio
+INSERT INTO Eleccion (fecha,idTipoEleccion,idTerritorio) VALUES('11/05/2015',1,15);
+--Resultado: Exception :  insert or update on table "eleccion" violates foreign key constraint "eleccion_idterritorio_fkey"
+INSERT INTO Eleccion (fecha,idTipoEleccion,idTerritorio) VALUES('12/05/2015',1,1);
+--Resultado: OK 
+
+--Eleccion: unicidad de tupla (fecha,idTipoEleccion)
+INSERT INTO Eleccion (fecha,idTipoEleccion,idTerritorio) VALUES('12/05/2015',1,1);
+--Resultado: Exception:  duplicate key value violates unique constraint "eleccion_fecha_idtipoeleccion_idterritorio_key"
+
+
+--Persona: idTerritorio ( OriundaDe ) debe existir en Territorio
+INSERT INTO Persona (nombre,apellido,fechaNacimiento,idTerritorio) VALUES('Bob','Esponja','05/05/1960',15);
+-- Resultado: ERROR:  Solo puede ser oriundo de una ciudad
+INSERT INTO Persona (nombre,apellido,fechaNacimiento,idTerritorio) VALUES('Bob','Esponja','05/05/1960',8);
+-- Resultado: OK
+
+-- Persona: idTerritorio(OriundaDe)  tiene que ser de TipoTerritorio ciudad
+-- Oriundo de pais 
+INSERT INTO Persona (nombre,apellido,fechaNacimiento,idTerritorio) VALUES ('Juan','Fuentes','14/08/1964',1);
+-- Resultado: ERROR:  Solo puede ser oriundo de una ciudad
+-- Oriundo de provincia 
 INSERT INTO Persona (nombre,apellido,fechaNacimiento,idTerritorio) VALUES ('Juan','Fuentes','14/08/1964',4);
+-- Resultado: ERROR:  Solo puede ser oriundo de una ciudad
+INSERT INTO Persona (nombre,apellido,fechaNacimiento,idTerritorio) VALUES ('Juan','Fuentes','14/08/1964',8);
+-- Resultado: OK
+
+--Persona fechaNacimiento <= fechaDefuncion
+-- fechaNacimiento > fechaDefuncion
+INSERT INTO Persona (nombre,apellido,fechaNacimiento,fechaDefuncion,idTerritorio) VALUES ('Juan','Perez','14/08/1964','14/08/1924',8);
+-- Resultado: ERROR:  new row for relation "persona" violates check constraint "persona_check"
+-- fechaNacimiento =  fechaDefuncion
+INSERT INTO Persona (nombre,apellido,fechaNacimiento,fechaDefuncion,idTerritorio) VALUES ('Juan','Perez','14/08/1964','14/08/1964',8);
+-- Resultado: OK
+INSERT INTO Persona (nombre,apellido,fechaNacimiento,fechaDefuncion,idTerritorio) VALUES ('Jose','Perez','14/08/1964','14/08/1999',8);
+-- Resultado: OK
+
+
 
 -- CheckViveEn se muda antes de haber nacido - Raise Exception: No se puede ir a vivir a un lugar antes de haber nacido o despues de haber muerto
 INSERT INTO ViveEn (idPersona,idTerritorio,fechaDesde) VALUES (1,9,'31/01/1960');
