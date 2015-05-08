@@ -628,8 +628,8 @@ DECLARE
 	votosCandidato INT; 
 BEGIN
 	SELECT count(*) INTO VotosMesa FROM VotaEn WHERE idMesaElectoral = NEW.idMesaElectoral AND Hora IS NOT NULL;
-	SELECT SUM(Cantidad) INTO votosCandidato FROM VotosCandidato WHERE idMesaElectoral = NEW.idMesaElectoral;
-	IF votosCandidato > votosMesa THEN
+	SELECT SUM(Cantidad) INTO votosCandidato FROM VotosCandidato WHERE idMesaElectoral = NEW.idMesaElectoral AND idCandidato <> NEW.idCandidato;
+	IF ( votosCandidato + NEW.Cantidad) > votosMesa THEN
 	      RAISE EXCEPTION '(Candidatos) La suma de votos no puede ser mayor a la cantidad de gente que voto en la Mesa';
 	ELSE
 		RETURN NEW;
@@ -654,8 +654,8 @@ DECLARE
 	VotosEnContraPlebiscito INT;
 BEGIN
 	SELECT count(*) INTO VotosMesa FROM VotaEn WHERE idMesaElectoral = NEW.idMesaElectoral AND Hora IS NOT NULL;
-	SELECT SUM(aFavor),SUM(enContra) INTO VotosAFavorPlebiscito,VotosEnContraPlebiscito FROM VotosPlebiscito WHERE idMesaElectoral = NEW.idMesaElectoral;
-	IF VotosAFavorPlebiscito + VotosEnContraPlebiscito  > votosMesa THEN
+	
+	IF NEW.aFavor + NEW.enContra  > votosMesa THEN
 	      RAISE EXCEPTION '(Plebiscito) La suma de votos no puede ser mayor a la cantidad de gente que voto en la Mesa';
 	ELSE
 		RETURN NEW;
