@@ -562,8 +562,8 @@ BEGIN
         SELECT SUM(Cantidad) 
         INTO votosCandidato 
         FROM VotosCandidato 
-        WHERE idMesaElectoral = NEW.idMesaElectoral;
-        IF votosCandidato > votosMesa THEN
+        WHERE idMesaElectoral = NEW.idMesaElectoral AND idCandidato <> NEW.idCandidato;
+        IF votosCandidato + NEW.cantidad > votosMesa THEN
                 RAISE EXCEPTION '(Candidatos) La suma de votos no puede ser mayor a la cantidad de gente que voto en la Mesa';
         ELSE
         RETURN NEW;
