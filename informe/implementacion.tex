@@ -542,7 +542,7 @@ CREATE TRIGGER CheckTerritorioMesaEnTerritorioEleccionInsert
 
 \subsubsection{Consistencia de la cantidad de votos en elecciones de cargo.}
 
-\indent Para poder verificar que la cantidad de votos no sea mayor a la cantidad de gente que votó se creó un trigger que verifica que la suma de la cantidad de votos de todos los candidatos en una MesaCandidato no supere a la suma de Ciudadanos que están en capacidad de votar en la Mesa. Como puede haber ciudadanos que voten en blaco, es evidente que no necesariamente se va a mantener la igualdad entre la cantidad de votos a candidatos y la cantidad de gente que está autorizada para votar en una Mesa Electoral.
+\indent Para poder verificar que la cantidad de votos no sea mayor a la cantidad de gente que votó se creó un trigger que verifica que la suma de la cantidad de votos de todos los candidatos en una MesaCandidato no supere a la suma de Ciudadanos que están en capacidad de votar en la Mesa. Como puede haber ciudadanos que voten en blaco, es evidente que no necesariamente se va a mantener la igualdad entre la cantidad de votos a candidatos y la cantidad de gente que está autorizada para votar en una Mesa Electoral.\\
 \indent El trigger obliga, entonces, a que primero se tenga que actualizar la hora de voto en VotaEn para poder agregar el voto a cantidad.\\ 
 
 \begin{verbatim}
@@ -551,8 +551,14 @@ DECLARE
         votosMesa INT;
         votosCandidato INT; 
 BEGIN
-        SELECT count(*) INTO VotosMesa FROM VotaEn WHERE idMesaElectoral = NEW.idMesaElectoral AND Hora IS NOT NULL;
-        SELECT SUM(Cantidad) INTO votosCandidato FROM VotosCandidato WHERE idMesaElectoral = NEW.idMesaElectoral;
+        SELECT count(*)
+        INTO VotosMesa 
+        FROM VotaEn 
+        WHERE idMesaElectoral = NEW.idMesaElectoral AND Hora IS NOT NULL;
+        SELECT SUM(Cantidad) 
+        INTO votosCandidato 
+        FROM VotosCandidato 
+        WHERE idMesaElectoral = NEW.idMesaElectoral;
         IF votosCandidato > votosMesa THEN
                 RAISE EXCEPTION '(Candidatos) La suma de votos no puede ser mayor a la cantidad de gente que voto en la Mesa';
         ELSE
@@ -572,7 +578,7 @@ CREATE TRIGGER CheckUpdateVotosCandidatoCantidad
 
 \end{verbatim}
 
-\subsubsection{consistencia de la cantidad de votos en plebiscitos.}
+\subsubsection{Consistencia de la cantidad de votos en plebiscitos.}
 
 \indent Análogo al caso anterior, pero con Plebiscitos.\\
 
@@ -583,8 +589,13 @@ DECLARE
         VotosAFavorPlebiscito INT; 
         VotosEnContraPlebiscito INT;
 BEGIN
-        SELECT count(*) INTO VotosMesa FROM VotaEn WHERE idMesaElectoral = NEW.idMesaElectoral AND Hora IS NOT NULL;
-        SELECT SUM(aFavor),SUM(enContra) INTO VotosAFavorPlebiscito,VotosEnContraPlebiscito FROM VotosPlebiscito WHERE idMesaElectoral = NEW.idMesaElectoral;
+        SELECT count(*) 
+        INTO VotosMesa 
+        FROM VotaEn 
+        WHERE idMesaElectoral = NEW.idMesaElectoral AND Hora IS NOT NULL;
+        SELECT SUM(aFavor),SUM(enContra) 
+        INTO VotosAFavorPlebiscito,VotosEnContraPlebiscito 
+        FROM VotosPlebiscito WHERE idMesaElectoral = NEW.idMesaElectoral;
         IF VotosAFavorPlebiscito + VotosEnContraPlebiscito  > votosMesa THEN
               RAISE EXCEPTION '(Plebiscito) La suma de votos no puede ser mayor a la cantidad de gente que voto en la Mesa';
         ELSE
