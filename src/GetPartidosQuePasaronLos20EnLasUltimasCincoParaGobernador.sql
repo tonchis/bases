@@ -27,7 +27,7 @@ HAVING ((SUM(vc.Cantidad)) *100 /
 		 INNER JOIN MesaElectoral me2 ON e2.idEleccion = me2.idEleccion
 		 INNER JOIN VotosCandidato vc2 ON me2.idMesaElectoral = vc2.idMesaElectoral
 		 WHERE e2.idEleccion = e.idEleccion) > 20)
-
+	AND COUNT(pp.Nombre) >
 $BODY$
 
 LANGUAGE sql;
