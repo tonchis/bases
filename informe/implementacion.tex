@@ -400,6 +400,10 @@ CREATE TRIGGER CheckUpdateViveEn
 \end{verbatim}
 
 \subsubsection{Las personas votan en mesas electorales que responden a los territorios donde viven.}
+
+\indent Para determinar cuál es el territorio dónde una persona vive al momento de una elección dada, se obtienen los territorios dónde se registra que vivió la persona antes de la elección y a partir de allí se recupera aquél para el cual se cumple que la persona no vivió en otro territorio posteriormente antes de la fecha de la elección.\\
+ 
+
 \begin{verbatim}
 CREATE OR REPLACE FUNCTION CheckVotaEnDondeVive() RETURNS TRIGGER AS $$
 BEGIN
